@@ -1,6 +1,6 @@
 # Roll Role Playing Game
 
-## Starring Rock
+### Starring Rock
 
 ### CVTC Capstone Spring 2016 Project
 
