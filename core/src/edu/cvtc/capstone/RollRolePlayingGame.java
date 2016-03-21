@@ -76,6 +76,8 @@ public class RollRolePlayingGame extends ApplicationAdapter implements InputProc
                 sprite.draw(spriteBatch);
             }
         }
+        Assets.fanwoodText18.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
+        Assets.fanwoodText18.draw(spriteBatch, "PLAYER POS X: " + player.getPosition().x + "POS Y: " + player.getPosition().y, 1000, 20);
         spriteBatch.end();
 
         box2DDebugRenderer.render(world, camera.combined);

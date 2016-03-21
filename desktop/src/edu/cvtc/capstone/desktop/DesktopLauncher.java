@@ -8,6 +8,7 @@ public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.resizable = false;
+		config.title = "Roll Role Playing Game";
 		config.width = 1280;
 		config.height = 720;
 		new LwjglApplication(new RollRolePlayingGame(), config);
