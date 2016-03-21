@@ -11,7 +11,7 @@ public class Assets {
 
     public static Texture rock;
 
-    public static Texture loadTexture (String file) {
+    public static Texture loadTexture(String file) {
         return new Texture(Gdx.files.internal(file));
     }
 
