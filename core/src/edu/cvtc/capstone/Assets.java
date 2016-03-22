@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 /**
  * Created by Lance Matysik on 3/20/16.
@@ -13,6 +15,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 public class Assets {
 
     public static Texture rock;
+
+    public static TiledMap map;
 
     public static BitmapFont fanwoodText18;
 
@@ -29,9 +33,15 @@ public class Assets {
         return generator.generateFont(params);
     }
 
+    public static TiledMap loadMap(String file) {
+        return new TmxMapLoader().load(file);
+    }
+
+
     public static void load() {
         rock = loadTexture("images/rock_with_eyes.png");
         fanwoodText18 = loadFont("fonts/Fanwood Text.otf", Color.WHITE, 18);
+        map = loadMap("maps/Test.tmx");
     }
 
 }

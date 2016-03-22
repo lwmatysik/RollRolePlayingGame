@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -18,6 +19,8 @@ import com.badlogic.gdx.utils.Array;
 public class RollRolePlayingGame extends ApplicationAdapter implements InputProcessor {
 
     private OrthographicCamera camera;
+    private OrthogonalTiledMapRenderer otmr;
+
     private World world;
     private Box2DDebugRenderer box2DDebugRenderer;
     private SpriteBatch spriteBatch;
@@ -43,13 +46,15 @@ public class RollRolePlayingGame extends ApplicationAdapter implements InputProc
         camera = new OrthographicCamera();
         camera.setToOrtho(false, width / 2, height / 2);
 
-        world = new World(new Vector2(), false);
+        world = new World(new Vector2(), true);
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         rock = new Rock(width / 2 - Assets.rock.getWidth() / 2, height / 2 - Assets.rock.getHeight() / 2, 1, 0.5f, 0.3f);
         player = rock.create(Assets.rock, world);
 
         spriteBatch = new SpriteBatch();
+
+        otmr = new OrthogonalTiledMapRenderer(Assets.map);
 
         Gdx.input.setInputProcessor(this);
     }
@@ -62,9 +67,10 @@ public class RollRolePlayingGame extends ApplicationAdapter implements InputProc
         world.step(1 / 60f, 6, 2);
 
         handleHeldKey();
-
+        otmr.setView(camera);
         camera.position.set(player.getPosition().x, player.getPosition().y, 1f);
         camera.update();
+        otmr.render();
 
         spriteBatch.begin();
         world.getBodies(bodies);
@@ -73,12 +79,14 @@ public class RollRolePlayingGame extends ApplicationAdapter implements InputProc
                 Sprite sprite = (Sprite) body.getUserData();
                 sprite.setPosition(body.getPosition().x, body.getPosition().y);
                 sprite.setRotation(body.getAngle() * MathUtils.radiansToDegrees);
+
                 sprite.draw(spriteBatch);
             }
         }
         Assets.fanwoodText18.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
         Assets.fanwoodText18.draw(spriteBatch, "PLAYER POS X: " + player.getPosition().x + "POS Y: " + player.getPosition().y, 1000, 20);
         spriteBatch.end();
+
 
         box2DDebugRenderer.render(world, camera.combined);
     }
@@ -100,6 +108,9 @@ public class RollRolePlayingGame extends ApplicationAdapter implements InputProc
         box2DDebugRenderer.dispose();
         world.dispose();
         Assets.rock.dispose();
+        Assets.fanwoodText18.dispose();
+        Assets.map.dispose();
+        otmr.dispose();
     }
 
     @Override
