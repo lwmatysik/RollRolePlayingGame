@@ -2,8 +2,6 @@ package edu.cvtc.capstone;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -16,23 +14,19 @@ import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
 
-public class RollRolePlayingGame extends ApplicationAdapter implements InputProcessor {
+public class RollRolePlayingGame extends ApplicationAdapter {
 
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer otmr;
 
     private World world;
+    private Keyboard keyboard;
     private Box2DDebugRenderer box2DDebugRenderer;
     private SpriteBatch spriteBatch;
 
     private Body player;
 
     private Rock rock;
-
-    private boolean movingLeft = false;
-    private boolean movingRight = false;
-    private boolean movingUp = false;
-    private boolean movingDown = false;
 
     private Array<Body> bodies = new Array<Body>();
 
@@ -52,11 +46,13 @@ public class RollRolePlayingGame extends ApplicationAdapter implements InputProc
         rock = new Rock(width / 2 - Assets.rock.getWidth() / 2, height / 2 - Assets.rock.getHeight() / 2, 1, 0.5f, 0.3f);
         player = rock.create(Assets.rock, world);
 
+        keyboard = new Keyboard(player);
+
         spriteBatch = new SpriteBatch();
 
         otmr = new OrthogonalTiledMapRenderer(Assets.map);
 
-        Gdx.input.setInputProcessor(this);
+        Gdx.input.setInputProcessor(keyboard);
     }
 
     @Override
@@ -66,13 +62,15 @@ public class RollRolePlayingGame extends ApplicationAdapter implements InputProc
 
         world.step(1 / 60f, 6, 2);
 
-        handleHeldKey();
+        keyboard.handleHeldKey();
+
         otmr.setView(camera);
         camera.position.set(player.getPosition().x, player.getPosition().y, 1f);
         camera.update();
         otmr.render();
 
         spriteBatch.begin();
+
         world.getBodies(bodies);
         for (Body body : bodies) {
             if (body.getUserData() != null && body.getUserData() instanceof Sprite) {
@@ -83,24 +81,13 @@ public class RollRolePlayingGame extends ApplicationAdapter implements InputProc
                 sprite.draw(spriteBatch);
             }
         }
+
         Assets.fanwoodText18.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
         Assets.fanwoodText18.draw(spriteBatch, "PLAYER POS X: " + player.getPosition().x + "POS Y: " + player.getPosition().y, 1000, 20);
+
         spriteBatch.end();
 
-
         box2DDebugRenderer.render(world, camera.combined);
-    }
-
-    public void handleHeldKey() {
-        if (movingLeft) {
-            player.setTransform(player.getPosition().x -= 1f, player.getPosition().y, player.getAngle());
-        } else if (movingRight) {
-            player.setTransform(player.getPosition().x += 1f, player.getPosition().y, player.getAngle());
-        } else if (movingUp) {
-            player.setTransform(player.getPosition().x, player.getPosition().y += 1f, player.getAngle());
-        } else if (movingDown) {
-            player.setTransform(player.getPosition().x, player.getPosition().y -= 1f, player.getAngle());
-        }
     }
 
     @Override
@@ -113,79 +100,4 @@ public class RollRolePlayingGame extends ApplicationAdapter implements InputProc
         otmr.dispose();
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Input.Keys.LEFT:
-                player.setTransform(player.getPosition().x -= 1f, player.getPosition().y, player.getAngle());
-                movingLeft = true;
-                break;
-            case Input.Keys.RIGHT:
-                player.setTransform(player.getPosition().x += 1f, player.getPosition().y, player.getAngle());
-                movingRight = true;
-                break;
-            case Input.Keys.UP:
-                player.setTransform(player.getPosition().x, player.getPosition().y += 1f, player.getAngle());
-                movingUp = true;
-                break;
-            case Input.Keys.DOWN:
-                player.setTransform(player.getPosition().x, player.getPosition().y -= 1f, player.getAngle());
-                movingDown = true;
-                break;
-            default:
-                break;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        switch (keycode) {
-            case Input.Keys.LEFT:
-                movingLeft = false;
-                break;
-            case Input.Keys.RIGHT:
-                movingRight = false;
-                break;
-            case Input.Keys.UP:
-                movingUp = false;
-                break;
-            case Input.Keys.DOWN:
-                movingDown = false;
-                break;
-            default:
-                break;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
 }
