@@ -6,8 +6,8 @@ package edu.cvtc.capstone;
 
 public class Rock extends DynamicGameObject {
 
-    public Rock(float x, float y, float density, float friction, float restitution) {
-        super(x, y, density, friction, restitution);
+    public Rock(float x, float y) {
+        super(x, y);
     }
 
 }

@@ -15,6 +15,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 public class Assets {
 
     public static Texture rock;
+    public static Texture topHatMonster;
 
     public static TiledMap map;
 
@@ -40,6 +41,7 @@ public class Assets {
 
     public static void load() {
         rock = loadTexture("images/rock_with_eyes.png");
+        topHatMonster = loadTexture("images/top_hat_monster.png");
         fanwoodText18 = loadFont("fonts/Fanwood Text.otf", Color.WHITE, 18);
         map = loadMap("maps/Test.tmx");
     }

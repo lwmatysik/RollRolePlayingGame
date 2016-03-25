@@ -23,13 +23,13 @@ public class Keyboard implements InputProcessor{
 
     public void handleHeldKey() {
         if (movingLeft) {
-            player.setTransform(player.getPosition().x -= 1f, player.getPosition().y, player.getAngle());
+            player.setTransform(player.getPosition().x -= 2f, player.getPosition().y, player.getAngle());
         } else if (movingRight) {
-            player.setTransform(player.getPosition().x += 1f, player.getPosition().y, player.getAngle());
+            player.setTransform(player.getPosition().x += 2f, player.getPosition().y, player.getAngle());
         } else if (movingUp) {
-            player.setTransform(player.getPosition().x, player.getPosition().y += 1f, player.getAngle());
+            player.setTransform(player.getPosition().x, player.getPosition().y += 2f, player.getAngle());
         } else if (movingDown) {
-            player.setTransform(player.getPosition().x, player.getPosition().y -= 1f, player.getAngle());
+            player.setTransform(player.getPosition().x, player.getPosition().y -= 2f, player.getAngle());
         }
     }
 
@@ -37,19 +37,19 @@ public class Keyboard implements InputProcessor{
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Input.Keys.LEFT:
-                player.setTransform(player.getPosition().x -= 1f, player.getPosition().y, player.getAngle());
+                player.setTransform(player.getPosition().x -= 2f, player.getPosition().y, player.getAngle());
                 movingLeft = true;
                 break;
             case Input.Keys.RIGHT:
-                player.setTransform(player.getPosition().x += 1f, player.getPosition().y, player.getAngle());
+                player.setTransform(player.getPosition().x += 2f, player.getPosition().y, player.getAngle());
                 movingRight = true;
                 break;
             case Input.Keys.UP:
-                player.setTransform(player.getPosition().x, player.getPosition().y += 1f, player.getAngle());
+                player.setTransform(player.getPosition().x, player.getPosition().y += 2f, player.getAngle());
                 movingUp = true;
                 break;
             case Input.Keys.DOWN:
-                player.setTransform(player.getPosition().x, player.getPosition().y -= 1f, player.getAngle());
+                player.setTransform(player.getPosition().x, player.getPosition().y -= 2f, player.getAngle());
                 movingDown = true;
                 break;
             default:

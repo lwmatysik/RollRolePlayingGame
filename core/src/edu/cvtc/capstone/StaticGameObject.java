@@ -6,24 +6,24 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 /**
- * Created by Lance Matysik on 3/20/16.
+ * Created by Lance Matysik on 3/25/16.
  */
 
-public class DynamicGameObject {
+public class StaticGameObject {
 
     private Body body;
     private BodyDef bodyDef;
 
     private float x, y;
 
-    public DynamicGameObject(float x, float y) {
+    public StaticGameObject(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
     public Body create(Texture texture, World world) {
         bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.StaticBody;
         bodyDef.position.set(this.x, this.y);
         bodyDef.fixedRotation = true;
 
@@ -41,3 +41,4 @@ public class DynamicGameObject {
     }
 
 }
+

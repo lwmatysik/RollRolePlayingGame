@@ -9,10 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+
 
 public class RollRolePlayingGame extends ApplicationAdapter {
 
@@ -27,8 +26,11 @@ public class RollRolePlayingGame extends ApplicationAdapter {
     private Body player;
 
     private Rock rock;
+    private TopHatMonster topHatMonster;
 
     private Array<Body> bodies = new Array<Body>();
+    
+    private boolean colliding;
 
     @Override
     public void create() {
@@ -43,14 +45,21 @@ public class RollRolePlayingGame extends ApplicationAdapter {
         world = new World(new Vector2(), true);
         box2DDebugRenderer = new Box2DDebugRenderer();
 
-        rock = new Rock(width / 2 - Assets.rock.getWidth() / 2, height / 2 - Assets.rock.getHeight() / 2, 1, 0.5f, 0.3f);
+        rock = new Rock(width / 2 - Assets.rock.getWidth() / 2, height / 2 - Assets.rock.getHeight() / 2);
+        topHatMonster = new TopHatMonster(500f, 300f);
+        topHatMonster.create(Assets.topHatMonster, world);
+
         player = rock.create(Assets.rock, world);
+        
+        colliding = false;
 
         keyboard = new Keyboard(player);
 
         spriteBatch = new SpriteBatch();
 
         otmr = new OrthogonalTiledMapRenderer(Assets.map);
+
+        createContactListener();
 
         Gdx.input.setInputProcessor(keyboard);
     }
@@ -65,12 +74,15 @@ public class RollRolePlayingGame extends ApplicationAdapter {
         keyboard.handleHeldKey();
 
         otmr.setView(camera);
-        camera.position.set(player.getPosition().x, player.getPosition().y, 1f);
+        camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+        camera.setToOrtho(false);
         camera.update();
         otmr.render();
 
-        spriteBatch.begin();
+        createContactListener();
 
+        spriteBatch.begin();
+        
         world.getBodies(bodies);
         for (Body body : bodies) {
             if (body.getUserData() != null && body.getUserData() instanceof Sprite) {
@@ -82,6 +94,10 @@ public class RollRolePlayingGame extends ApplicationAdapter {
             }
         }
 
+        if (colliding) {
+            Assets.fanwoodText18.draw(spriteBatch, "COLLISION DETECTED!", 20, 680);
+        }
+
         Assets.fanwoodText18.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
         Assets.fanwoodText18.draw(spriteBatch, "PLAYER POS X: " + player.getPosition().x + "POS Y: " + player.getPosition().y, 1000, 20);
 
@@ -90,11 +106,38 @@ public class RollRolePlayingGame extends ApplicationAdapter {
         box2DDebugRenderer.render(world, camera.combined);
     }
 
+    private void createContactListener() {
+
+        world.setContactListener(new ContactListener() {
+            @Override
+            public void beginContact(Contact contact) {
+                colliding = true;
+                System.out.println("COLLISION");
+            }
+
+            @Override
+            public void endContact(Contact contact) {
+                colliding = false;
+            }
+
+            @Override
+            public void preSolve(Contact contact, Manifold oldManifold) {
+
+            }
+
+            @Override
+            public void postSolve(Contact contact, ContactImpulse impulse) {
+
+            }
+        });
+    }
+    
     @Override
     public void dispose() {
         box2DDebugRenderer.dispose();
         world.dispose();
         Assets.rock.dispose();
+        Assets.topHatMonster.dispose();
         Assets.fanwoodText18.dispose();
         Assets.map.dispose();
         otmr.dispose();
