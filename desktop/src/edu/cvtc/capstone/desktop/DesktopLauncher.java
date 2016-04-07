@@ -11,10 +11,12 @@ public class DesktopLauncher {
 		config.title = "Roll Role Playing Game";
 		config.width = 1280;
 		config.height = 720;
-		
+		config.vSyncEnabled = true;
+
+
 		// Teia's laptop is 720p but the dock on her Mac blocks the game
 		// the fullscreen settting is so she can see the whole play area
-		config.fullscreen = true;
+		config.fullscreen = false;
 		
 		new LwjglApplication(new RollRolePlayingGame(), config);
 	}

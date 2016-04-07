@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 
-
 public class RollRolePlayingGame extends ApplicationAdapter {
 
     private OrthographicCamera camera;
@@ -75,6 +74,7 @@ public class RollRolePlayingGame extends ApplicationAdapter {
 
         otmr.setView(camera);
         camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+        camera.setToOrtho(false);
         camera.update();
         otmr.render();
 
