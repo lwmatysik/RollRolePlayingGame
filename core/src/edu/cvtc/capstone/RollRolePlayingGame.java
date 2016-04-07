@@ -19,7 +19,7 @@ public class RollRolePlayingGame extends ApplicationAdapter {
     private OrthogonalTiledMapRenderer otmr;
 
     private World world;
-    private Keyboard keyboard;
+    private CharacterKeyboard characterKeyboard;
     private Box2DDebugRenderer box2DDebugRenderer;
     private SpriteBatch spriteBatch;
 
@@ -53,7 +53,7 @@ public class RollRolePlayingGame extends ApplicationAdapter {
         
         colliding = false;
 
-        keyboard = new Keyboard(player);
+        characterKeyboard = new CharacterKeyboard(player);
 
         spriteBatch = new SpriteBatch();
 
@@ -61,7 +61,7 @@ public class RollRolePlayingGame extends ApplicationAdapter {
 
         createContactListener();
 
-        Gdx.input.setInputProcessor(keyboard);
+        Gdx.input.setInputProcessor(characterKeyboard);
     }
 
     @Override
@@ -71,11 +71,10 @@ public class RollRolePlayingGame extends ApplicationAdapter {
 
         world.step(1 / 60f, 6, 2);
 
-        keyboard.handleHeldKey();
+        characterKeyboard.handleHeldKey();
 
         otmr.setView(camera);
         camera.position.set(player.getPosition().x, player.getPosition().y, 0);
-        camera.setToOrtho(false);
         camera.update();
         otmr.render();
 
@@ -96,6 +95,8 @@ public class RollRolePlayingGame extends ApplicationAdapter {
 
         if (colliding) {
             Assets.fanwoodText18.draw(spriteBatch, "COLLISION DETECTED!", 20, 680);
+        } else {
+            Assets.fanwoodText18.draw(spriteBatch, "", 20, 680);
         }
 
         Assets.fanwoodText18.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
