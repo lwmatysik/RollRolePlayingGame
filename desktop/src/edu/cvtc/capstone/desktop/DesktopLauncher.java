@@ -2,6 +2,7 @@ package edu.cvtc.capstone.desktop;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import edu.cvtc.capstone.RollRolePlayingApplication;
 import edu.cvtc.capstone.RollRolePlayingGame;
 
 public class DesktopLauncher {
@@ -18,6 +19,6 @@ public class DesktopLauncher {
 		// the fullscreen settting is so she can see the whole play area
 		config.fullscreen = false;
 		
-		new LwjglApplication(new RollRolePlayingGame(), config);
+		new LwjglApplication(new RollRolePlayingApplication(), config);
 	}
 }

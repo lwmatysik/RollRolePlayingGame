@@ -1,7 +1,8 @@
 package edu.cvtc.capstone;
 
-import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -12,7 +13,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 
-public class RollRolePlayingGame extends ApplicationAdapter {
+public class RollRolePlayingGame implements Screen {
+
+    private Game game;
 
     private OrthographicCamera camera;
     private OrthogonalTiledMapRenderer otmr;
@@ -31,8 +34,12 @@ public class RollRolePlayingGame extends ApplicationAdapter {
     
     private boolean colliding;
 
+    public RollRolePlayingGame(Game game) {
+        this.game = game;
+    }
+
     @Override
-    public void create() {
+    public void show() {
         float width = Gdx.graphics.getWidth();
         float height = Gdx.graphics.getHeight();
 
@@ -64,7 +71,7 @@ public class RollRolePlayingGame extends ApplicationAdapter {
     }
 
     @Override
-    public void render() {
+    public void render(float delta) {
         Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
@@ -105,6 +112,26 @@ public class RollRolePlayingGame extends ApplicationAdapter {
         spriteBatch.end();
 
         box2DDebugRenderer.render(world, camera.combined);
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
+    }
+
+    @Override
+    public void pause() {
+
+    }
+
+    @Override
+    public void resume() {
+
+    }
+
+    @Override
+    public void hide() {
+
     }
 
     private void createContactListener() {
