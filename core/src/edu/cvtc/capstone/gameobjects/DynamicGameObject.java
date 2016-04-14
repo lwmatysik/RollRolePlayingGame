@@ -1,4 +1,4 @@
-package edu.cvtc.capstone;
+package edu.cvtc.capstone.gameobjects;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -6,24 +6,24 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 
 /**
- * Created by Lance Matysik on 3/25/16.
+ * Created by Lance Matysik on 3/20/16.
  */
 
-public class StaticGameObject {
+public class DynamicGameObject {
 
     private Body body;
     private BodyDef bodyDef;
 
     private float x, y;
 
-    public StaticGameObject(float x, float y) {
+    public DynamicGameObject(float x, float y) {
         this.x = x;
         this.y = y;
     }
 
     public Body create(Texture texture, World world) {
         bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(this.x, this.y);
         bodyDef.fixedRotation = true;
 
@@ -41,4 +41,3 @@ public class StaticGameObject {
     }
 
 }
-

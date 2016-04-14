@@ -1,4 +1,4 @@
-package edu.cvtc.capstone;
+package edu.cvtc.capstone.controls;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;

@@ -1,4 +1,6 @@
-package edu.cvtc.capstone;
+package edu.cvtc.capstone.gameobjects;
+
+import edu.cvtc.capstone.gameobjects.DynamicGameObject;
 
 /**
  * Created by Lance Matysik on 3/20/16.

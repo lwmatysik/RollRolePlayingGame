@@ -1,4 +1,4 @@
-package edu.cvtc.capstone;
+package edu.cvtc.capstone.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -12,6 +12,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import edu.cvtc.capstone.Assets;
+import edu.cvtc.capstone.controls.CharacterKeyboard;
+import edu.cvtc.capstone.gameobjects.Rock;
+import edu.cvtc.capstone.gameobjects.TopHatMonster;
 
 public class RollRolePlayingGame implements Screen {
 

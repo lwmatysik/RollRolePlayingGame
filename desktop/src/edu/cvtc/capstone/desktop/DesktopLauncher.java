@@ -3,7 +3,6 @@ package edu.cvtc.capstone.desktop;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import edu.cvtc.capstone.RollRolePlayingApplication;
-import edu.cvtc.capstone.RollRolePlayingGame;
 
 public class DesktopLauncher {
 	public static void main (String[] arg) {
