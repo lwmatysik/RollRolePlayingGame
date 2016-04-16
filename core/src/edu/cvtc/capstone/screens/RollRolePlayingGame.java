@@ -29,7 +29,7 @@ public class RollRolePlayingGame implements Screen {
     private Box2DDebugRenderer box2DDebugRenderer;
     private SpriteBatch spriteBatch;
 
-    private Body player;
+    private Body rockBody;
 
     private Rock rock;
     private TopHatMonster topHatMonster;
@@ -59,11 +59,11 @@ public class RollRolePlayingGame implements Screen {
         topHatMonster = new TopHatMonster(500f, 300f);
         topHatMonster.create(Assets.topHatMonster, world);
 
-        player = rock.create(Assets.rock, world);
+        rockBody = rock.create(Assets.rock, world);
         
         colliding = false;
 
-        characterKeyboard = new CharacterKeyboard(player);
+        characterKeyboard = new CharacterKeyboard(rockBody, rock, game);
 
         spriteBatch = new SpriteBatch();
 
@@ -72,6 +72,7 @@ public class RollRolePlayingGame implements Screen {
         createContactListener();
 
         Gdx.input.setInputProcessor(characterKeyboard);
+
     }
 
     @Override
@@ -84,7 +85,7 @@ public class RollRolePlayingGame implements Screen {
         characterKeyboard.handleHeldKey();
 
         otmr.setView(camera);
-        camera.position.set(player.getPosition().x, player.getPosition().y, 0);
+        camera.position.set(rockBody.getPosition().x, rockBody.getPosition().y, 0);
         camera.setToOrtho(false);
         camera.update();
         otmr.render();
@@ -111,7 +112,7 @@ public class RollRolePlayingGame implements Screen {
         }
 
         Assets.fanwoodText18.draw(spriteBatch, "FPS: " + Gdx.graphics.getFramesPerSecond(), 20, 20);
-        Assets.fanwoodText18.draw(spriteBatch, "PLAYER POS X: " + player.getPosition().x + "POS Y: " + player.getPosition().y, 1000, 20);
+        Assets.fanwoodText18.draw(spriteBatch, "PLAYER POS X: " + rockBody.getPosition().x + "POS Y: " + rockBody.getPosition().y, 1000, 20);
 
         spriteBatch.end();
 

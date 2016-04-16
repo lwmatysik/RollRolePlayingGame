@@ -1,7 +1,5 @@
 package edu.cvtc.capstone.gameobjects;
 
-import edu.cvtc.capstone.gameobjects.StaticGameObject;
-
 /**
  * Created by Lance Matysik on 3/25/16.
  */

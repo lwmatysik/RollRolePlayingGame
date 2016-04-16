@@ -1,8 +1,13 @@
 package edu.cvtc.capstone.controls;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.physics.box2d.Body;
+import edu.cvtc.capstone.gameobjects.DynamicGameObject;
+import edu.cvtc.capstone.gameobjects.Rock;
+import edu.cvtc.capstone.screens.GameMenu;
+import edu.cvtc.capstone.screens.MainMenuScreen;
 
 /**
  * Created by Lance Matysik on 3/25/16.
@@ -15,21 +20,27 @@ public class CharacterKeyboard implements InputProcessor {
     private boolean movingUp = false;
     private boolean movingDown = false;
 
-    private Body player;
+    private Body rockBody;
 
-    public CharacterKeyboard(Body player) {
-        this.player = player;
+    private Rock rock;
+
+    private Game game;
+
+    public CharacterKeyboard(Body rockBody, Rock rock, Game game) {
+        this.rockBody = rockBody;
+        this.rock = rock;
+        this.game = game;
     }
 
     public void handleHeldKey() {
         if (movingLeft) {
-            player.setTransform(player.getPosition().x -= 1f, player.getPosition().y, player.getAngle());
+            rockBody.setTransform(rockBody.getPosition().x -= 1f, rockBody.getPosition().y, rockBody.getAngle());
         } else if (movingRight) {
-            player.setTransform(player.getPosition().x += 1f, player.getPosition().y, player.getAngle());
+            rockBody.setTransform(rockBody.getPosition().x += 1f, rockBody.getPosition().y, rockBody.getAngle());
         } else if (movingUp) {
-            player.setTransform(player.getPosition().x, player.getPosition().y += 1f, player.getAngle());
+            rockBody.setTransform(rockBody.getPosition().x, rockBody.getPosition().y += 1f, rockBody.getAngle());
         } else if (movingDown) {
-            player.setTransform(player.getPosition().x, player.getPosition().y -= 1f, player.getAngle());
+            rockBody.setTransform(rockBody.getPosition().x, rockBody.getPosition().y -= 1f, rockBody.getAngle());
         }
     }
 
@@ -37,20 +48,23 @@ public class CharacterKeyboard implements InputProcessor {
     public boolean keyDown(int keycode) {
         switch (keycode) {
             case Input.Keys.LEFT:
-                player.setTransform(player.getPosition().x -= 1f, player.getPosition().y, player.getAngle());
+                rockBody.setTransform(rockBody.getPosition().x -= 1f, rockBody.getPosition().y, rockBody.getAngle());
                 movingLeft = true;
                 break;
             case Input.Keys.RIGHT:
-                player.setTransform(player.getPosition().x += 1f, player.getPosition().y, player.getAngle());
+                rockBody.setTransform(rockBody.getPosition().x += 1f, rockBody.getPosition().y, rockBody.getAngle());
                 movingRight = true;
                 break;
             case Input.Keys.UP:
-                player.setTransform(player.getPosition().x, player.getPosition().y += 1f, player.getAngle());
+                rockBody.setTransform(rockBody.getPosition().x, rockBody.getPosition().y += 1f, rockBody.getAngle());
                 movingUp = true;
                 break;
             case Input.Keys.DOWN:
-                player.setTransform(player.getPosition().x, player.getPosition().y -= 1f, player.getAngle());
+                rockBody.setTransform(rockBody.getPosition().x, rockBody.getPosition().y -= 1f, rockBody.getAngle());
                 movingDown = true;
+                break;
+            case Input.Keys.ESCAPE:
+                game.setScreen(new GameMenu(game, rock));
                 break;
             default:
                 break;
