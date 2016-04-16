@@ -113,6 +113,8 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void dispose() {
-
+        batch.dispose();
+        stage.dispose();
+        skin.dispose();
     }
 }
