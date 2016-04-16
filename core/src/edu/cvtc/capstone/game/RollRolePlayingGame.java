@@ -1,4 +1,4 @@
-package edu.cvtc.capstone.screens;
+package edu.cvtc.capstone.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;

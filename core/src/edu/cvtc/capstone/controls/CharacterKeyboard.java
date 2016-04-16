@@ -4,10 +4,8 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.physics.box2d.Body;
-import edu.cvtc.capstone.gameobjects.DynamicGameObject;
 import edu.cvtc.capstone.gameobjects.Rock;
-import edu.cvtc.capstone.screens.GameMenu;
-import edu.cvtc.capstone.screens.MainMenuScreen;
+import edu.cvtc.capstone.screens.CharacterMenuScreen;
 
 /**
  * Created by Lance Matysik on 3/25/16.
@@ -64,7 +62,7 @@ public class CharacterKeyboard implements InputProcessor {
                 movingDown = true;
                 break;
             case Input.Keys.ESCAPE:
-                game.setScreen(new GameMenu(game, rock));
+                game.setScreen(new CharacterMenuScreen(game, rock));
                 break;
             default:
                 break;

@@ -6,13 +6,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import edu.cvtc.capstone.game.RollRolePlayingGame;
 import edu.cvtc.capstone.gameobjects.Rock;
 
 /**
  * Created by Lance Matysik on 4/14/16.
  */
 
-public class GameMenu implements Screen {
+public class CharacterMenuScreen implements Screen {
 
     private Game game;
     private Skin skin;
@@ -25,7 +26,7 @@ public class GameMenu implements Screen {
 
     private Rock rock;
 
-    public GameMenu(Game game, Rock rock) {
+    public CharacterMenuScreen(Game game, Rock rock) {
         this.game = game;
         this.rock = rock;
     }
