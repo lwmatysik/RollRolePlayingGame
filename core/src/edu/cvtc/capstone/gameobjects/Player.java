@@ -52,7 +52,7 @@ public class Player extends Sprite implements InputProcessor {
 
         // clamp velocity
         if(velocity.y > speed)
-            velocity.y = speed;
+                velocity.y = speed;
         else if(velocity.y < -speed)
             velocity.y = -speed;
 
@@ -132,17 +132,24 @@ public class Player extends Sprite implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         switch(keycode) {
+            case Input.Keys.UP:
             case Input.Keys.W:
                 velocity.y = speed;
                 break;
+            case Input.Keys.DOWN:
             case Input.Keys.S:
                 velocity.y = -speed;
                 break;
+            case Input.Keys.LEFT:
             case Input.Keys.A:
                 velocity.x = -speed;
                 break;
+            case Input.Keys.RIGHT:
             case Input.Keys.D:
                 velocity.x = speed;
+                break;
+            default:
+                break;
         }
         return true;
     }
@@ -152,11 +159,17 @@ public class Player extends Sprite implements InputProcessor {
         switch(keycode) {
             case Input.Keys.A:
             case Input.Keys.D:
+            case Input.Keys.LEFT:
+            case Input.Keys.RIGHT:
                 velocity.x = 0;
                 break;
             case Input.Keys.W:
             case Input.Keys.S:
+            case Input.Keys.UP:
+            case Input.Keys.DOWN:
                 velocity.y = 0;
+                break;
+            default:
                 break;
         }
         return true;
