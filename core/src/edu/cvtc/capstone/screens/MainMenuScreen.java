@@ -41,20 +41,30 @@ public class MainMenuScreen implements Screen {
         createBasicSkin();
         TextButton creditsGameButton = new TextButton("Credits", skin);
         TextButton newGameButton = new TextButton("New game", skin); // Use the initialized skin
-        newGameButton.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/8 , Gdx.graphics.getHeight()/2);
-        creditsGameButton.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/8, Gdx.graphics.getHeight()/5);
+        TextButton exitGameButton = new TextButton("Quit", skin);
+        
+        newGameButton.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/8 , 450);
+        creditsGameButton.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/8, 300);
+        exitGameButton.setPosition(Gdx.graphics.getWidth()/2 - Gdx.graphics.getWidth()/8, 150);
+        
         stage.addActor(newGameButton);
         stage.addActor(creditsGameButton);
+        stage.addActor(exitGameButton);
         Gdx.input.setInputProcessor(stage);
 
         newGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("Clicked New Game");
                 game.setScreen(new RollRolePlayingGame(game));
             }
         });
 
+        exitGameButton.addListener(new ClickListener() {
+        	@Override
+            public void clicked(InputEvent event, float x, float y) {
+                Gdx.app.exit();
+            }
+        });
 
     }
 
