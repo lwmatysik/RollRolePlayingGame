@@ -14,7 +14,6 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import edu.cvtc.capstone.game.RollRolePlayingGame;
 import edu.cvtc.capstone.gameobjects.Player;
 
 /**
@@ -27,7 +26,6 @@ public class MainMenuScreen implements Screen {
     private Texture texture;
     private Stage stage;
     private SpriteBatch batch;
-    private Screen screen;
     private Player player;
 
     public MainMenuScreen(Game game, Player player) {
@@ -107,9 +105,7 @@ public class MainMenuScreen implements Screen {
 
         batch.begin();
         batch.draw(texture, 0, 0);
-        
-        //tex.setToOrtho(false, 1280, 720);
-        
+                
         batch.end();
         stage.act();
         stage.draw();
