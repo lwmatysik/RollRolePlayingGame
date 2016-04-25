@@ -1,6 +1,8 @@
 package edu.cvtc.capstone;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import edu.cvtc.capstone.gameobjects.Player;
 import edu.cvtc.capstone.screens.MainMenuScreen;
 
 /**
@@ -9,6 +11,7 @@ import edu.cvtc.capstone.screens.MainMenuScreen;
 public class RollRolePlayingApplication extends Game {
 
     private Game game;
+    private Player player;
 
     public RollRolePlayingApplication() {
         game = this;
@@ -41,6 +44,8 @@ public class RollRolePlayingApplication extends Game {
 
     @Override
     public void create() {
-        setScreen(new MainMenuScreen(game));
+        Assets.load();
+        this.player = new Player(new Sprite(Assets.rock));
+        setScreen(new MainMenuScreen(game, player));
     }
 }

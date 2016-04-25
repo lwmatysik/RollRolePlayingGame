@@ -14,8 +14,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-
 import edu.cvtc.capstone.game.RollRolePlayingGame;
+import edu.cvtc.capstone.gameobjects.Player;
 
 /**
  * Created by tsweitzer on 4/14/16.
@@ -28,10 +28,11 @@ public class MainMenuScreen implements Screen {
     private Stage stage;
     private SpriteBatch batch;
     private Screen screen;
+    private Player player;
 
-
-    public MainMenuScreen(Game game) {
+    public MainMenuScreen(Game game, Player player) {
         this.game = game;
+        this.player = player;
     }
 
     @Override
@@ -57,7 +58,7 @@ public class MainMenuScreen implements Screen {
         newGameButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new RollRolePlayingGame(game));
+                game.setScreen(new LevelOne(game, player));
             }
         });
         
