@@ -14,10 +14,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import edu.cvtc.capstone.game.RollRolePlayingGame;
 
 /**
- * Created by lancematysik on 4/14/16.
+ * Created by tsweitzer on 4/14/16.
  */
 public class MainMenuScreen implements Screen {
 
@@ -26,6 +27,7 @@ public class MainMenuScreen implements Screen {
     private Texture texture;
     private Stage stage;
     private SpriteBatch batch;
+    private Screen screen;
 
 
     public MainMenuScreen(Game game) {
@@ -58,6 +60,14 @@ public class MainMenuScreen implements Screen {
                 game.setScreen(new RollRolePlayingGame(game));
             }
         });
+        
+        creditsGameButton.addListener(new ClickListener() {
+        	@Override
+        	public void clicked(InputEvent event, float x, float y) {
+        		game.setScreen(new CreditsScreen(game));
+        	}
+        });
+        
 
         exitGameButton.addListener(new ClickListener() {
         	@Override
@@ -95,7 +105,10 @@ public class MainMenuScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         batch.begin();
-        batch.draw(texture, 10, 10);
+        batch.draw(texture, 0, 0);
+        
+        //tex.setToOrtho(false, 1280, 720);
+        
         batch.end();
         stage.act();
         stage.draw();
