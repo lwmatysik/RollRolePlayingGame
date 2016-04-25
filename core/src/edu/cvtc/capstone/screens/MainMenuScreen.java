@@ -105,7 +105,7 @@ public class MainMenuScreen implements Screen {
 
         batch.begin();
         batch.draw(texture, 0, 0);
-                
+        
         batch.end();
         stage.act();
         stage.draw();

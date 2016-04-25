@@ -8,11 +8,12 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
+import edu.cvtc.capstone.gameobjects.Player;
 
 /**
  * Created by tsweitzer on 4/21/16.
@@ -20,11 +21,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class CreditsScreen implements Screen {
 
 	private Game game;
+	private Player player;
 	private Label developerNames;
 	private Label dateCreated;
 	private Skin skin;
 	private Stage stage;
-	private ScrollPane scrollPane;
 	private Table table;
 	
 	public CreditsScreen(Game game) {
@@ -65,7 +66,7 @@ public class CreditsScreen implements Screen {
 		backButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				 game.setScreen(new MainMenuScreen(game));
+				 game.setScreen(new MainMenuScreen(game, player));
 			}
 		});
 	
@@ -106,6 +107,8 @@ public class CreditsScreen implements Screen {
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
+		stage.dispose();
+		skin.dispose();
 		
 	}
 
