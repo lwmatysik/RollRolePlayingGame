@@ -14,6 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+
 import edu.cvtc.capstone.gameobjects.Player;
 
 /**
@@ -23,6 +24,7 @@ public class MainMenuScreen implements Screen {
 
     private Game game;
     private Skin skin;
+    private BitmapFont font;
     private Texture texture;
     private Stage stage;
     private SpriteBatch batch;
@@ -38,7 +40,10 @@ public class MainMenuScreen implements Screen {
         texture = new Texture(Gdx.files.internal("images/castle_background.png"));
         stage = new Stage();
         batch = new SpriteBatch();
-
+        font = new BitmapFont();
+        font.setColor(Color.RED);
+        font.getData().setScale(3);
+        
         createBasicSkin();
         TextButton creditsGameButton = new TextButton("Credits", skin);
         TextButton newGameButton = new TextButton("New game", skin); // Use the initialized skin
@@ -105,7 +110,7 @@ public class MainMenuScreen implements Screen {
 
         batch.begin();
         batch.draw(texture, 0, 0);
-        
+        font.draw(batch, "Roll Role Playing Game", 430, 600);
         batch.end();
         stage.act();
         stage.draw();
