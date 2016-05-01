@@ -50,9 +50,9 @@ public class CharacterMenuScreen implements Screen {
         scrollPane = new ScrollPane(list, skin);
         Label characterLevel = new Label("Level: " + rock.getCharacterLevel(), skin);
         Label expPoints = new Label("Exp Points: " + rock.getExperiencePoints(), skin);
-        Label health = new Label("Health: ", skin);
-        Label sword = new Label("Sword: ", skin);
-        Label armor = new Label("Armor: ", skin);
+        Label health = new Label("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth(), skin);
+        Label sword = new Label("Sword: " + rock.getSwordName(), skin);
+        Label armor = new Label("Armor: " + rock.getArmorName(), skin);
         Texture rockTexture = new Texture(Gdx.files.internal("images/rock_with_eyes.png"));
         Image rock = new Image(rockTexture);
 

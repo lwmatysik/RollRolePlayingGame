@@ -43,7 +43,7 @@ public class Player extends Sprite implements InputProcessor {
 
     public void changeLevel(Game game) {
         readyForNextLevel = false;
-        game.setScreen(new CharacterMenuScreen(game, new Rock(1,2)));
+        game.setScreen(new CharacterMenuScreen(game, new Rock(1, 2)));
 
     }
 

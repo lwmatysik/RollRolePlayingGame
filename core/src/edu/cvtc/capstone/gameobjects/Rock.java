@@ -10,25 +10,36 @@ public class Rock extends DynamicGameObject {
     private int experiencePoints;
     private int attack;
     private int defense;
+    private int maxHealth;
+    private int currentHealth;
     private Sword sword;
     private Armor armor;
 
-    public Rock(float x, float y, int characterLevel, int experiencePoints, int attack, int defense) {
+    public Rock(float x, float y) {
         super(x, y);
         this.characterLevel = 1;
         this.experiencePoints = 0;
         this.attack = 1;
         this.defense = 1;
+        this.maxHealth = 100;
+        this.currentHealth = 100;
         this.armor = new Armor("Leather", 1);
         this.sword = new Sword("Wood", 1);
     }
 
-    public void setCharacterLevel(int characterLevel) {
-        this.characterLevel = characterLevel;
+    public void levelUp() {
+        this.characterLevel += 1;
+        this.attack += 1;
+        this.defense += 1;
+        this.maxHealth += 100;
     }
 
     public int getCharacterLevel() {
         return characterLevel;
+    }
+
+    public void setCharacterLevel(int characterLevel) {
+        this.characterLevel = characterLevel;
     }
 
     public int getExperiencePoints() {
@@ -39,10 +50,53 @@ public class Rock extends DynamicGameObject {
         this.experiencePoints = experiencePoints;
     }
 
-    public void levelUp() {
-        this.characterLevel += 1;
-        this.attack += 1;
-        this.defense += 1;
+    public int getAttack() {
+        return attack;
     }
 
+    public void setAttack(int attack) {
+        this.attack = attack;
+    }
+
+    public int getDefense() {
+        return defense;
+    }
+
+    public void setDefense(int defense) {
+        this.defense = defense;
+    }
+
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    public void setMaxHealth(int maxHealth) {
+        this.maxHealth = maxHealth;
+    }
+
+    public int getCurrentHealth() {
+        return currentHealth;
+    }
+
+    public void setCurrentHealth(int currentHealth) {
+        this.currentHealth = currentHealth;
+    }
+
+    public String getSwordName() {
+        return sword.getSwordName();
+    }
+
+    public void setSword(String swordName, int attackModifier) {
+        this.sword.setSwordName(swordName);
+        this.sword.setAttackModifier(attackModifier);
+    }
+
+    public String getArmorName() {
+        return armor.getArmorName();
+    }
+
+    public void setArmor(String armorName, int defenseModifier) {
+        this.armor.setArmorName(armorName);
+        this.armor.setDefenseModifier(defenseModifier);
+    }
 }

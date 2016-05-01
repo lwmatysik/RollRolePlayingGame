@@ -30,4 +30,6 @@ public class Sword {
         this.attackModifier = attackModifier;
     }
 
+
+
 }

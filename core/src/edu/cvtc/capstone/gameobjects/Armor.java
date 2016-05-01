@@ -13,4 +13,19 @@ public class Armor {
         this.defenseModifier = defenseModifier;
     }
 
+    public int getDefenseModifier() {
+        return defenseModifier;
+    }
+
+    public void setDefenseModifier(int defenseModifier) {
+        this.defenseModifier = defenseModifier;
+    }
+
+    public String getArmorName() {
+        return armorName;
+    }
+
+    public void setArmorName(String armorName) {
+        this.armorName = armorName;
+    }
 }
