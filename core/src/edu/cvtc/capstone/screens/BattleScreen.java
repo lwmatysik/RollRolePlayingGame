@@ -21,10 +21,10 @@ public class BattleScreen implements Screen {
     private int currentLevel;
     private Rock rock;
 
-    public BattleScreen(Game game, Player player, int currentLevel, Rock rock) {
+    public BattleScreen(Game game, Player player, int currentDungeonLevel, Rock rock) {
         this.game = game;
         this.player = player;
-        this.currentLevel = currentLevel;
+        this.currentLevel = currentDungeonLevel;
         this.rock = rock;
     }
 
@@ -44,7 +44,6 @@ public class BattleScreen implements Screen {
 
         stage.act();
         stage.draw();
-
 
     }
 
