@@ -51,7 +51,7 @@ public class Rock extends DynamicGameObject {
     }
 
     public int getAttack() {
-        return attack;
+        return attack * sword.getAttackModifier();
     }
 
     public void setAttack(int attack) {
