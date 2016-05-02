@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import edu.cvtc.capstone.screens.BattleScreen;
 import edu.cvtc.capstone.screens.CharacterMenuScreen;
 
 /**
@@ -43,8 +44,7 @@ public class Player extends Sprite implements InputProcessor {
 
     public void changeLevel(Game game) {
         readyForNextLevel = false;
-        game.setScreen(new CharacterMenuScreen(game, new Rock(1, 2)));
-
+        game.setScreen(new BattleScreen(game, this, new Rock(1, 2), 1));
     }
 
 
