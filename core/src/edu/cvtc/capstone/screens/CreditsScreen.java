@@ -28,8 +28,9 @@ public class CreditsScreen implements Screen {
 	private Stage stage;
 	private Table table;
 	
-	public CreditsScreen(Game game) {
+	public CreditsScreen(Game game, Player player) {
 		this.game = game;
+		this.player = player;
 	}
 
 	@Override

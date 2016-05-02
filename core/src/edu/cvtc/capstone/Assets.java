@@ -40,7 +40,7 @@ public class Assets {
 
 
     public static void load() {
-        rock = loadTexture("images/rock_with_eyes_pixelated42.png");
+        rock = loadTexture("images/rock_with_eyes_pixelated30.png");
         topHatMonster = loadTexture("images/top_hat_monster.png");
         fanwoodText18 = loadFont("fonts/Fanwood Text.otf", Color.WHITE, 18);
         map = loadMap("maps/Test.tmx");

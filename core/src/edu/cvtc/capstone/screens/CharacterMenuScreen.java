@@ -22,13 +22,16 @@ public class CharacterMenuScreen implements Screen {
     private ScrollPane scrollPane;
     private Table table;
 
+    private Screen previousScreen;
+
     private String[] temporaryTestItemList;
 
     private Rock rock;
 
-    public CharacterMenuScreen(Game game, Rock rock) {
+    public CharacterMenuScreen(Game game, Rock rock, Screen screen) {
         this.game = game;
         this.rock = rock;
+        this.previousScreen = screen;
     }
 
     @Override
@@ -77,7 +80,7 @@ public class CharacterMenuScreen implements Screen {
             public boolean keyDown(int keycode) {
                 switch (keycode) {
                     case Input.Keys.ESCAPE:
-                        game.setScreen(new RollRolePlayingGame(game));
+                        game.setScreen(previousScreen);
                         break;
                     default:
                         break;

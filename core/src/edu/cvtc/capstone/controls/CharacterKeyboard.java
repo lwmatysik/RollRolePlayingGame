@@ -61,9 +61,9 @@ public class CharacterKeyboard implements InputProcessor {
                 rockBody.setTransform(rockBody.getPosition().x, rockBody.getPosition().y -= 1f, rockBody.getAngle());
                 movingDown = true;
                 break;
-            case Input.Keys.ESCAPE:
-                game.setScreen(new CharacterMenuScreen(game, rock));
-                break;
+            //case Input.Keys.ESCAPE:
+                //game.setScreen(new CharacterMenuScreen(game, rock, previousLevel));
+                //break;
             default:
                 break;
         }

@@ -35,7 +35,7 @@ public class MainMenuScreen implements Screen {
 
     @Override
     public void show() {
-        texture = new Texture(Gdx.files.internal("images/castle_background.png"));
+        texture = new Texture(Gdx.files.internal("images/newBackground.jpg"));
         stage = new Stage();
         batch = new SpriteBatch();
 
@@ -63,7 +63,7 @@ public class MainMenuScreen implements Screen {
         creditsGameButton.addListener(new ClickListener() {
         	@Override
         	public void clicked(InputEvent event, float x, float y) {
-        		game.setScreen(new CreditsScreen(game));
+        		game.setScreen(new CreditsScreen(game, player));
         	}
         });
         

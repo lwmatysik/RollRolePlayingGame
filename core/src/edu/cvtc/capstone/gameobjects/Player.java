@@ -6,29 +6,40 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import edu.cvtc.capstone.screens.CharacterMenuScreen;
 
 /**
  * Created by ruhk5 on 4/18/2016.
  */
-public class Player extends Sprite implements InputProcessor {
+public class Player extends Sprite {
+
+    private TiledMap map;
 
     /** the movement velocity */
     private Vector2 velocity = new Vector2();
 
     private boolean readyForNextLevel;
+    private boolean readyForPreviousLevel;
 
-    private float speed = 600 * 2, gravity = 0;
+    private Vector2 previousPosition;
+
+    private float speed = 150 * 2;
 
     private TiledMapTileLayer collisionLayer;
+    private TiledMapTileLayer itemLayer;
 
     private float tileWidth;
     private float tileHeight;
 
     public Player(Sprite sprite) {
         super(sprite);
+        this.setX(10);
+        this.setY(10);
     }
 
     @Override
@@ -41,10 +52,16 @@ public class Player extends Sprite implements InputProcessor {
         return readyForNextLevel;
     }
 
-    public void changeLevel(Game game) {
+    public void removeNextLevel() {
         readyForNextLevel = false;
-        game.setScreen(new CharacterMenuScreen(game, new Rock(1,2)));
+    }
 
+    public boolean previousLevel() {
+        return readyForPreviousLevel;
+    }
+
+    public void removePreviousLevel() {
+        readyForPreviousLevel = false;
     }
 
 
@@ -58,16 +75,34 @@ public class Player extends Sprite implements InputProcessor {
 
         // save old position
         float oldX = getX(), oldY = getY();
-        boolean collisionX = false, collisionY = false, nextLevel = false;
+        boolean collisionX = false, collisionY = false, nextLevel = false, previousLevel = false;
 
         this.tileWidth = collisionLayer.getTileWidth();
         this.tileHeight = collisionLayer.getTileHeight();
+
+        if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("chest")) {
+            itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(collisionLayer.getCell(1,0).getTile());
+        }
+
+        if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("door")) {
+            itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
+            //collisionLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
+        }
+
+//        if (detectXCollision("chest") || detectYCollision("chest")) {
+//            itemLayer.getCell((int) ((getX() + getWidth() / 2) / tileWidth), (int) ((getY() + getHeight()) / tileHeight)).setTile(null);
+//            collisionLayer.getCell((int) ((getX() + getWidth() / 2) / tileWidth), (int) ((getY() + getHeight()) / tileHeight)).setTile(collisionLayer.getCell((int) (getX()   / tileWidth), (int) (getY()  / tileHeight)).getTile());
+//
+//
+//        }
 
         // move on x
         setX(getX() + velocity.x * delta);
 
         collisionX = detectXCollision("wall");
         nextLevel = detectXCollision("nextlevel");
+        previousLevel = detectXCollision("previouslevel");
+
 
         // react to x collision
         if(collisionX) {
@@ -83,6 +118,10 @@ public class Player extends Sprite implements InputProcessor {
             nextLevel = detectYCollision("nextlevel");
         }
 
+        if (!previousLevel) {
+            previousLevel = detectYCollision("previouslevel");
+        }
+
         // react to y collision
         if(collisionY) {
             setY(oldY);
@@ -92,8 +131,10 @@ public class Player extends Sprite implements InputProcessor {
         if (nextLevel) {
             //prolly use some kind of current level
             readyForNextLevel = true;
+        }
 
-
+        if (previousLevel) {
+            readyForPreviousLevel = true;
         }
     }
 
@@ -105,6 +146,14 @@ public class Player extends Sprite implements InputProcessor {
         this.velocity = velocity;
     }
 
+    public void setXVelocity(float x) {
+        velocity.x = x;
+    }
+
+    public void setYVelocity(float y) {
+        velocity.y = y;
+    }
+
     public float getSpeed() {
         return speed;
     }
@@ -113,12 +162,12 @@ public class Player extends Sprite implements InputProcessor {
         this.speed = speed;
     }
 
-    public float getGravity() {
-        return gravity;
+    public float getXPos() {
+        return getX();
     }
 
-    public void setGravity(float gravity) {
-        this.gravity = gravity;
+    public float getYPos() {
+        return getY();
     }
 
     public TiledMapTileLayer getCollisionLayer() {
@@ -129,51 +178,9 @@ public class Player extends Sprite implements InputProcessor {
         this.collisionLayer = collisionLayer;
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        switch(keycode) {
-            case Input.Keys.UP:
-            case Input.Keys.W:
-                velocity.y = speed;
-                break;
-            case Input.Keys.DOWN:
-            case Input.Keys.S:
-                velocity.y = -speed;
-                break;
-            case Input.Keys.LEFT:
-            case Input.Keys.A:
-                velocity.x = -speed;
-                break;
-            case Input.Keys.RIGHT:
-            case Input.Keys.D:
-                velocity.x = speed;
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
+    public void setItemLayer(TiledMapTileLayer tileLayer) { this.itemLayer = tileLayer;}
 
-    @Override
-    public boolean keyUp(int keycode) {
-        switch(keycode) {
-            case Input.Keys.A:
-            case Input.Keys.D:
-            case Input.Keys.LEFT:
-            case Input.Keys.RIGHT:
-                velocity.x = 0;
-                break;
-            case Input.Keys.W:
-            case Input.Keys.S:
-            case Input.Keys.UP:
-            case Input.Keys.DOWN:
-                velocity.y = 0;
-                break;
-            default:
-                break;
-        }
-        return true;
-    }
+
 
     private boolean detectXCollision(String key) {
 
@@ -243,34 +250,12 @@ public class Player extends Sprite implements InputProcessor {
         return collision;
     }
 
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
+    public void setMap(TiledMap map) {
+        this.map = map;
+        this.collisionLayer = ((TiledMapTileLayer) map.getLayers().get(0));
+        this.itemLayer = ((TiledMapTileLayer) map.getLayers().get(7));
     }
 
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
 
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
 
 }

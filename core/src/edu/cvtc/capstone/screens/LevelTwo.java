@@ -3,52 +3,49 @@ package edu.cvtc.capstone.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
-import edu.cvtc.capstone.Assets;
 import edu.cvtc.capstone.gameobjects.Player;
 import edu.cvtc.capstone.gameobjects.Rock;
-import edu.cvtc.capstone.gameobjects.TopHatMonster;
 
 /**
  * Created by ruhk5 on 4/18/2016.
  */
-public class LevelOne implements Screen {
+public class LevelTwo implements Screen {
 
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
     private OrthographicCamera camera;
     private Game game;
 
+    private Screen previousScreen;
+
     private Player player;
 
-    public LevelOne(Game game, Player player) {
+    public LevelTwo(Game game, Player player, Screen screen) {
         this.game = game;
         this.player = player;
+        this.previousScreen = screen;
 
-        //map = new TmxMapLoader().load("maps/level1.tmx");
-        map = new TmxMapLoader().load("maps/levelOneFinal.tmx");
+        map = new TmxMapLoader().load("maps/levelOne.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map);
 
         camera = new OrthographicCamera();
 
-        player.setMap(map);
-
+        //player = new Player(new Sprite(new Texture("images/rock_with_eyes_pixelated.png")), (TiledMapTileLayer) map.getLayers().get(0));
         //player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
-        //player.setItemLayer((TiledMapTileLayer) map.getLayers().get(7));
-
-
         //player.setPosition(11 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 14) * player.getCollisionLayer().getTileHeight());
-        player.setPosition(20 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 25) * player.getCollisionLayer().getTileHeight());
+
+        //Gdx.input.setInputProcessor(player);
+
+
+        player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
+        player.setItemLayer((TiledMapTileLayer) map.getLayers().get(4));
+        player.setPosition(9 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 17) * player.getCollisionLayer().getTileHeight());
 
     }
 
@@ -58,27 +55,31 @@ public class LevelOne implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.position.set((int)(player.getX() + player.getWidth() / 2), (int)(player.getY() + player.getHeight() / 2), 0);
-        //camera.zoom = 1.9f;
-        camera.zoom = 1.2f;
+        camera.zoom = 1.9f;
         camera.update();
 
         renderer.setView(camera);
 
-        //renderer.render(new int[] {1,2,3,4,5});
-        renderer.render(new int[] {1,2,3,4,6});
+        renderer.render(new int[] {1,2,3,4,5});
 
         renderer.getBatch().begin();
-
         player.draw(renderer.getBatch());
         renderer.getBatch().end();
 
-        renderer.render(new int[] {5,7});
+        //renderer.render(new int[] {1});
 
         //terrible way of doing this, must rethink
         if (player.nextLevel()) {
             player.removeNextLevel();
             player.setVelocity(new Vector2(0,0));
-            game.setScreen(new LevelTwo(game, player, this));
+            game.setScreen(new CharacterMenuScreen(game, new Rock(1,2), this));
+        }
+
+        if (player.previousLevel()) {
+            player.removePreviousLevel();
+            player.setVelocity(new Vector2(0,0));
+            player.setPosition(930,770);
+            game.setScreen(previousScreen);
         }
 
 
@@ -94,17 +95,16 @@ public class LevelOne implements Screen {
     public void show() {
 
 
+        //map = new TmxMapLoader().load("maps/level1.tmx");
+
+        //renderer = new OrthogonalTiledMapRenderer(map);
+
+        //camera = new OrthographicCamera();
 
         //player = new Player(new Sprite(new Texture("images/rock_with_eyes_pixelated.png")), (TiledMapTileLayer) map.getLayers().get(0));
-
-        player.setMap(map);
-
-        //player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
-        //player.setItemLayer((TiledMapTileLayer) map.getLayers().get(7));
+        player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
+        player.setItemLayer((TiledMapTileLayer) map.getLayers().get(4));
         //player.setPosition(11 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 14) * player.getCollisionLayer().getTileHeight());
-
-
-
 
         //Gdx.input.setInputProcessor(player);
 
@@ -132,8 +132,6 @@ public class LevelOne implements Screen {
                     case Input.Keys.ESCAPE:
                         callCharacterMenu();
                         break;
-                    case Input.Keys.SHIFT_LEFT:
-                        player.setSpeed(10);
                     default:
                         break;
                 }
@@ -156,8 +154,6 @@ public class LevelOne implements Screen {
                     case Input.Keys.DOWN:
                         player.setYVelocity(0);
                         break;
-                    case Input.Keys.SHIFT_LEFT:
-                        player.setSpeed(600);
                     default:
                         break;
                 }
@@ -213,7 +209,6 @@ public class LevelOne implements Screen {
 
     @Override
     public void resume() {
-
     }
 
     @Override
