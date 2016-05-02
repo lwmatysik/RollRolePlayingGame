@@ -15,7 +15,7 @@ public class DesktopLauncher {
 
 
 		// Teia's laptop is 720p but the dock on her Mac blocks the game
-		// the fullscreen settting is so she can see the whole play area
+		// the fullscreen setting is so she can see the whole play area
 		config.fullscreen = false;
 		
 		new LwjglApplication(new RollRolePlayingApplication(), config);

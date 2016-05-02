@@ -72,7 +72,7 @@ public class LevelTwo implements Screen {
         if (player.nextLevel()) {
             player.removeNextLevel();
             player.setVelocity(new Vector2(0,0));
-            game.setScreen(new CharacterMenuScreen(game, new Rock(1,2), this));
+            game.setScreen(new CharacterMenuScreen(game, new Rock(), this));
         }
 
         if (player.previousLevel()) {
@@ -195,7 +195,7 @@ public class LevelTwo implements Screen {
     }
 
     public void callCharacterMenu() {
-        game.setScreen(new CharacterMenuScreen(game, new Rock(1,2), this));
+        game.setScreen(new CharacterMenuScreen(game, new Rock(), this));
     }
 
     @Override

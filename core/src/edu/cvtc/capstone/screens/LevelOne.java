@@ -18,6 +18,8 @@ import edu.cvtc.capstone.gameobjects.Player;
 import edu.cvtc.capstone.gameobjects.Rock;
 import edu.cvtc.capstone.gameobjects.TopHatMonster;
 
+import static edu.cvtc.capstone.Assets.rock;
+
 /**
  * Created by ruhk5 on 4/18/2016.
  */
@@ -79,6 +81,12 @@ public class LevelOne implements Screen {
             player.removeNextLevel();
             player.setVelocity(new Vector2(0,0));
             game.setScreen(new LevelTwo(game, player, this));
+        }
+
+        if (player.readyForBattle()) {
+            player.removeBattle();
+            player.setVelocity(new Vector2(0,0));
+            game.setScreen(new BattleScreen(game, player, player.getRock(), 1));
         }
 
 
@@ -199,7 +207,7 @@ public class LevelOne implements Screen {
     }
 
     public void callCharacterMenu() {
-        game.setScreen(new CharacterMenuScreen(game, new Rock(1,2), this));
+        game.setScreen(new CharacterMenuScreen(game, new Rock(), this));
     }
 
     @Override

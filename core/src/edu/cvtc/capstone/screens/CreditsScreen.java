@@ -23,7 +23,9 @@ public class CreditsScreen implements Screen {
 	private Game game;
 	private Player player;
 	private Label developerNames;
+	private Label developerLabel;
 	private Label dateCreated;
+	private Label classCreated;
 	private Skin skin;
 	private Stage stage;
 	private Table table;
@@ -47,21 +49,30 @@ public class CreditsScreen implements Screen {
 		table.setFillParent(true);
 		table.setBackground(skin.getDrawable("default-rect"));
 		
-        developerNames = new Label("Developers: Teia Sweitzer\n Lance Matysik  \n Steven Dahlstrom  \n", skin);
-		dateCreated = new Label("Spring 2016 IT Capstone Class", skin);
+		dateCreated = new Label("CVTC Spring 2016", skin);
+		developerLabel = new Label("Developers:", skin);
+        developerNames = new Label("      Teia Sweitzer\n      Lance Matysik\n      Steven Dahlstrom", skin);
+		classCreated = new Label("IT-SD Capstone", skin);
+		dateCreated.setFontScale(4);
+		classCreated.setFontScale(4);
+		developerLabel.setFontScale(3);
 		developerNames.setFontScale(2);
-		dateCreated.setFontScale(2);
 		
-		table.add(developerNames).pad(10).height(50).spaceLeft(450).spaceRight(500);
+		
+		
+		table.add(dateCreated).padBottom(15).height(80).center().top();
 		table.row();
-		table.add(dateCreated).pad(10).height(50).spaceLeft(450).spaceRight(500);
+		table.add(classCreated).padBottom(15).height(50).center();
+		table.row();
+		table.add(developerLabel).pad(10).height(50).center();
+		table.row();
+		table.add(developerNames).pad(50).height(90).center();
 		table.row();
 		
 		TextButton backButton = new TextButton("Back", skin);
-		backButton.setPosition(620, 250);
+		table.add(backButton).pad(10).height(50).center().width(100f);
 		
 		stage.addActor(table);
-		stage.addActor(backButton);
 		Gdx.input.setInputProcessor(stage);
 		
 		backButton.addListener(new ClickListener() {

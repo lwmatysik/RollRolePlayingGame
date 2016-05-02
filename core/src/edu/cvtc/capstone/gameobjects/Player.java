@@ -11,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import edu.cvtc.capstone.screens.BattleScreen;
 import edu.cvtc.capstone.screens.CharacterMenuScreen;
 
 /**
@@ -20,11 +21,14 @@ public class Player extends Sprite {
 
     private TiledMap map;
 
+    private Rock rock;
+
     /** the movement velocity */
     private Vector2 velocity = new Vector2();
 
     private boolean readyForNextLevel;
     private boolean readyForPreviousLevel;
+    private boolean readyForBattle;
 
     private Vector2 previousPosition;
 
@@ -36,10 +40,11 @@ public class Player extends Sprite {
     private float tileWidth;
     private float tileHeight;
 
-    public Player(Sprite sprite) {
+    public Player(Sprite sprite, Rock rock) {
         super(sprite);
         this.setX(10);
         this.setY(10);
+        this.rock = rock;
     }
 
     @Override
@@ -52,6 +57,8 @@ public class Player extends Sprite {
         return readyForNextLevel;
     }
 
+    public boolean readyForBattle() { return readyForBattle; }
+
     public void removeNextLevel() {
         readyForNextLevel = false;
     }
@@ -60,8 +67,13 @@ public class Player extends Sprite {
         return readyForPreviousLevel;
     }
 
+    public void removeBattle() {
+        readyForBattle = false;
+    }
+
     public void removePreviousLevel() {
         readyForPreviousLevel = false;
+        //game.setScreen(new BattleScreen(game, this, new Rock(1, 2), 1));
     }
 
 
@@ -82,6 +94,7 @@ public class Player extends Sprite {
 
         if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("chest")) {
             itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(collisionLayer.getCell(1,0).getTile());
+            readyForBattle = true;
         }
 
         if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("door")) {
@@ -254,6 +267,10 @@ public class Player extends Sprite {
         this.map = map;
         this.collisionLayer = ((TiledMapTileLayer) map.getLayers().get(0));
         this.itemLayer = ((TiledMapTileLayer) map.getLayers().get(7));
+    }
+
+    public Rock getRock() {
+        return this.rock;
     }
 
 
