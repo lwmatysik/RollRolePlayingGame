@@ -114,7 +114,7 @@ public class Rock {
             if (currentHealth + 50 > maxHealth) {
                 this.currentHealth = maxHealth;
             } else {
-                this.maxHealth += 50;
+                this.currentHealth += 50;
             }
         }
     }
