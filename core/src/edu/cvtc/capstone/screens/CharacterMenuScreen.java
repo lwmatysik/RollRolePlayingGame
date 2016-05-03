@@ -130,7 +130,7 @@ public class CharacterMenuScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (rock.getCurrentHealth() != rock.getMaxHealth()) {
                     rock.usePotion();
-                    createPotionList();
+                    show();
                 }
             }
         });
@@ -163,7 +163,6 @@ public class CharacterMenuScreen implements Screen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        table.validate();
         stage.act(delta);
         stage.draw();
     }
