@@ -110,7 +110,8 @@ public class Rock {
     public void usePotion() {
         if(this.numberOfPotionsInInventory > 0) {
             this.numberOfPotionsInInventory--;
-            if (this.maxHealth + 50 > this.maxHealth) {
+
+            if (this.currentHealth + 50 > this.maxHealth) {
                 this.currentHealth = this.maxHealth;
             } else {
                 maxHealth += 50;
