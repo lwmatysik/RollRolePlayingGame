@@ -108,18 +108,18 @@ public class Rock {
     }
 
     public void usePotion() {
-        if(this.numberOfPotionsInInventory > 0) {
+        if(numberOfPotionsInInventory > 0) {
             this.numberOfPotionsInInventory--;
 
-            if (this.currentHealth + 50 > this.maxHealth) {
-                this.currentHealth = this.maxHealth;
+            if (currentHealth + 50 > maxHealth) {
+                this.currentHealth = maxHealth;
             } else {
-                maxHealth += 50;
+                this.maxHealth += 50;
             }
         }
     }
 
     public int getNumberOfPotionsInInventory() {
-        return this.numberOfPotionsInInventory;
+        return numberOfPotionsInInventory;
     }
 }
