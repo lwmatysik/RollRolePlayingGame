@@ -207,7 +207,7 @@ public class LevelOne implements Screen {
     }
 
     public void callCharacterMenu() {
-        game.setScreen(new CharacterMenuScreen(game, new Rock(), this));
+        game.setScreen(new CharacterMenuScreen(game, player.getRock(), this));
     }
 
     @Override

@@ -30,7 +30,7 @@ public class LevelTwo implements Screen {
         this.player = player;
         this.previousScreen = screen;
 
-        map = new TmxMapLoader().load("maps/levelOne.tmx");
+        map = new TmxMapLoader().load("maps/levelTwoFinal.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map);
 
@@ -44,8 +44,8 @@ public class LevelTwo implements Screen {
 
 
         player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
-        player.setItemLayer((TiledMapTileLayer) map.getLayers().get(4));
-        player.setPosition(9 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 17) * player.getCollisionLayer().getTileHeight());
+        player.setItemLayer((TiledMapTileLayer) map.getLayers().get(7));
+        player.setPosition(27 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 21) * player.getCollisionLayer().getTileHeight());
 
     }
 
@@ -55,16 +55,18 @@ public class LevelTwo implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.position.set((int)(player.getX() + player.getWidth() / 2), (int)(player.getY() + player.getHeight() / 2), 0);
-        camera.zoom = 1.9f;
+        camera.zoom = 1.2f;
         camera.update();
 
         renderer.setView(camera);
 
-        renderer.render(new int[] {1,2,3,4,5});
+        renderer.render(new int[] {1,2,4,5,6,7});
 
         renderer.getBatch().begin();
         player.draw(renderer.getBatch());
         renderer.getBatch().end();
+
+        renderer.render(new int[] {3});
 
         //renderer.render(new int[] {1});
 
@@ -103,7 +105,7 @@ public class LevelTwo implements Screen {
 
         //player = new Player(new Sprite(new Texture("images/rock_with_eyes_pixelated.png")), (TiledMapTileLayer) map.getLayers().get(0));
         player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
-        player.setItemLayer((TiledMapTileLayer) map.getLayers().get(4));
+        player.setItemLayer((TiledMapTileLayer) map.getLayers().get(7));
         //player.setPosition(11 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 14) * player.getCollisionLayer().getTileHeight());
 
         //Gdx.input.setInputProcessor(player);
@@ -195,7 +197,7 @@ public class LevelTwo implements Screen {
     }
 
     public void callCharacterMenu() {
-        game.setScreen(new CharacterMenuScreen(game, new Rock(), this));
+        game.setScreen(new CharacterMenuScreen(game, player.getRock(), this));
     }
 
     @Override
