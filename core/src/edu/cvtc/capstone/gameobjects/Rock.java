@@ -12,6 +12,8 @@ public class Rock {
     private int defense;
     private int maxHealth;
     private int currentHealth;
+    private int numberOfPotionsInInventory;
+
     private Sword sword;
     private Armor armor;
 
@@ -22,7 +24,8 @@ public class Rock {
         this.attack = 1;
         this.defense = 1;
         this.maxHealth = 100;
-        this.currentHealth = 100;
+        this.currentHealth = 50;
+        this.numberOfPotionsInInventory = 1;
         this.armor = new Armor("Leather", 1);
         this.sword = new Sword("Wood", 1);
     }
@@ -98,5 +101,25 @@ public class Rock {
     public void setArmor(String armorName, int defenseModifier) {
         this.armor.setArmorName(armorName);
         this.armor.setDefenseModifier(defenseModifier);
+    }
+
+    public void addPotion() {
+        this.numberOfPotionsInInventory++;
+    }
+
+    public void usePotion() {
+        if(numberOfPotionsInInventory > 0) {
+            this.numberOfPotionsInInventory--;
+
+            if (currentHealth + 50 > maxHealth) {
+                this.currentHealth = maxHealth;
+            } else {
+                this.currentHealth += 50;
+            }
+        }
+    }
+
+    public int getNumberOfPotionsInInventory() {
+        return numberOfPotionsInInventory;
     }
 }
