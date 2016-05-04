@@ -1,19 +1,11 @@
 package edu.cvtc.capstone.gameobjects;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTile;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import edu.cvtc.capstone.screens.BattleScreen;
-import edu.cvtc.capstone.screens.CharacterMenuScreen;
-
 /**
  * Created by ruhk5 on 4/18/2016.
  */
@@ -23,7 +15,6 @@ public class Player extends Sprite {
 
     private Rock rock;
 
-    /** the movement velocity */
     private Vector2 velocity = new Vector2();
 
     private boolean readyForNextLevel;
@@ -33,9 +24,7 @@ public class Player extends Sprite {
     private boolean foundItem;
     private String itemMessage;
 
-    private Vector2 previousPosition;
-
-    private float speed = 150 * 2;
+    private float speed = 200;
     private float distanceSinceLastBattle = 0;
 
     private TiledMapTileLayer collisionLayer;
@@ -98,10 +87,6 @@ public class Player extends Sprite {
         }
     }
 
-    public void removeNextLevel() {
-        readyForNextLevel = false;
-    }
-
     public boolean readyForPreviousLevel() {
         if (this.readyForPreviousLevel) {
             readyForPreviousLevel = false;
@@ -111,25 +96,13 @@ public class Player extends Sprite {
         }
     }
 
-    public void removeBattle() {
-        readyForBattle = false;
-    }
-
-    public void removePreviousLevel() {
-        readyForPreviousLevel = false;
-        //game.setScreen(new BattleScreen(game, this, new Rock(1, 2), 1));
-    }
-
-
     public void update(float delta) {
 
-        // clamp velocity
         if(velocity.y > speed)
                 velocity.y = speed;
         else if(velocity.y < -speed)
             velocity.y = -speed;
 
-        // save old position
         float oldX = getX(), oldY = getY();
         boolean collisionX = false, collisionY = false, nextLevel = false, previousLevel = false;
 
@@ -152,24 +125,35 @@ public class Player extends Sprite {
 
                 itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
 
+                if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("iron")) {
+                    rock.setSword("Iron Sword", 2);
+                    foundItem = true;
+                    itemMessage = "You found an Iron Sword!";
+                } else if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("gold")) {
+                    rock.setSword("Gold Sword", 3);
+                    foundItem = true;
+                    itemMessage = "You found a Gold Sword!";
+                }
+
                 collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
-                rock.setSword("Iron Sword" , 2);
-                foundItem = true;
-                itemMessage = "You found an Iron Sword!";
-                //readyForBattle = true;
+
             }
 
             if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("armor")) {
 
                 itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
-                collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
-                rock.setArmor("Iron Armor", 2);
-                foundItem = true;
-                itemMessage = "You found Iron Armor!";
 
-                rock.setSword("Iron Sword" , 2);
+                if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("iron")) {
+                    rock.setArmor("Iron Armor", 5);
+                    foundItem = true;
+                    itemMessage = "You found Iron Armor!";
+                } else if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("gold")) {
+                    rock.setArmor("Gold Armor", 10);
+                    foundItem = true;
+                    itemMessage = "You found Gold Armor!";
+                }
+                    collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
 
-                //readyForBattle = true;
             }
 
 
@@ -187,28 +171,17 @@ public class Player extends Sprite {
             readyForBoss = true;
         }
 
-//        if (detectXCollision("chest") || detectYCollision("chest")) {
-//            itemLayer.getCell((int) ((getX() + getWidth() / 2) / tileWidth), (int) ((getY() + getHeight()) / tileHeight)).setTile(null);
-//            collisionLayer.getCell((int) ((getX() + getWidth() / 2) / tileWidth), (int) ((getY() + getHeight()) / tileHeight)).setTile(collisionLayer.getCell((int) (getX()   / tileWidth), (int) (getY()  / tileHeight)).getTile());
-//
-//
-//        }
-
-        // move on x
         setX(getX() + velocity.x * delta);
 
         collisionX = detectXCollision("wall");
         nextLevel = detectXCollision("nextlevel");
         previousLevel = detectXCollision("previouslevel");
 
-
-        // react to x collision
         if(collisionX) {
             setX(oldX);
             velocity.x = 0;
         }
 
-        // move on y
         setY(getY() + velocity.y * delta);
 
         collisionY = detectYCollision("wall");
@@ -220,14 +193,12 @@ public class Player extends Sprite {
             previousLevel = detectYCollision("previouslevel");
         }
 
-        // react to y collision
         if(collisionY) {
             setY(oldY);
             velocity.y = 0;
         }
 
         if (nextLevel) {
-            //prolly use some kind of current level
             readyForNextLevel = true;
         }
 
@@ -236,14 +207,10 @@ public class Player extends Sprite {
         }
 
         distanceSinceLastBattle += (Math.sqrt(Math.pow((getX() - oldX), 2) + Math.pow((getY() - oldY), 2)  ) );
-        if ( distanceSinceLastBattle >= 800 ) {
+        if ( distanceSinceLastBattle >= 8000 ) {
             readyForBattle = true;
             distanceSinceLastBattle = 0;
         }
-    }
-
-    public Vector2 getVelocity() {
-        return velocity;
     }
 
     public void setVelocity(Vector2 velocity) {
@@ -264,14 +231,6 @@ public class Player extends Sprite {
 
     public void setSpeed(float speed) {
         this.speed = speed;
-    }
-
-    public float getXPos() {
-        return getX();
-    }
-
-    public float getYPos() {
-        return getY();
     }
 
     public TiledMapTileLayer getCollisionLayer() {

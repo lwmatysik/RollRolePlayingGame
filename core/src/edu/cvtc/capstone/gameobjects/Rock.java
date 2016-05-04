@@ -37,6 +37,7 @@ public class Rock {
         this.attack += 1;
         this.defense += 1;
         this.maxHealth += 50;
+        this.currentHealth = this.maxHealth;
     }
 
     public int getCharacterLevel() {

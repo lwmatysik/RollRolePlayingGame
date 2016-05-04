@@ -3,13 +3,19 @@ package edu.cvtc.capstone.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
 import edu.cvtc.capstone.gameobjects.Player;
-import edu.cvtc.capstone.gameobjects.Rock;
 
 /**
  * Created by ruhk5 on 4/18/2016.
@@ -21,30 +27,30 @@ public class LevelTwo implements Screen {
     private OrthographicCamera camera;
     private Game game;
 
-    private Screen previousScreen;
+    private Stage stage;
+    private Skin skin;
 
     private Player player;
 
+    private Screen previousScreen;
+
     public LevelTwo(Game game, Player player, Screen screen) {
+
         this.game = game;
         this.player = player;
         this.previousScreen = screen;
 
-        map = new TmxMapLoader().load("maps/levelTwoFinal.tmx");
+        stage = new Stage();
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"), new TextureAtlas("ui/uiskin.atlas"));
+
+        map = new TmxMapLoader().load("maps/LevelTwoFinal.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map);
 
         camera = new OrthographicCamera();
 
-        //player = new Player(new Sprite(new Texture("images/rock_with_eyes_pixelated.png")), (TiledMapTileLayer) map.getLayers().get(0));
-        //player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
-        //player.setPosition(11 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 14) * player.getCollisionLayer().getTileHeight());
+        player.setMap(map);
 
-        //Gdx.input.setInputProcessor(player);
-
-
-        player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
-        player.setItemLayer((TiledMapTileLayer) map.getLayers().get(7));
         player.setPosition(27 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 21) * player.getCollisionLayer().getTileHeight());
 
     }
@@ -60,20 +66,18 @@ public class LevelTwo implements Screen {
 
         renderer.setView(camera);
 
-        renderer.render(new int[] {1,2,4,5,6,7});
+        renderer.render(new int[] {1,2,3,5,6,7});
 
         renderer.getBatch().begin();
+
         player.draw(renderer.getBatch());
         renderer.getBatch().end();
 
-        renderer.render(new int[] {3});
+        renderer.render(new int[] {4});
 
-        //renderer.render(new int[] {1});
-
-        //terrible way of doing this, must rethink
         if (player.readyForNextLevel()) {
             player.setVelocity(new Vector2(0,0));
-            game.setScreen(new CharacterMenuScreen(game, new Rock(), this));
+            //game.setScreen(new LevelTwo(game, player, this));
         }
 
         if (player.readyForPreviousLevel()) {
@@ -81,6 +85,23 @@ public class LevelTwo implements Screen {
             player.setPosition(930,770);
             game.setScreen(previousScreen);
         }
+
+        if (player.readyForBattle()) {
+            player.setVelocity(new Vector2(0,0));
+            game.setScreen(new BattleScreen(game, player, this, 1));
+
+        }
+
+        if (player.readyForBossBattle()) {
+            player.setVelocity(new Vector2(0,0));
+            game.setScreen(new BattleScreen(game, player, this, 1));
+        }
+
+        if (player.foundItem()) {
+            showMessage(player.getMessage());
+        }
+
+        stage.draw();
 
 
     }
@@ -94,19 +115,7 @@ public class LevelTwo implements Screen {
     @Override
     public void show() {
 
-
-        //map = new TmxMapLoader().load("maps/level1.tmx");
-
-        //renderer = new OrthogonalTiledMapRenderer(map);
-
-        //camera = new OrthographicCamera();
-
-        //player = new Player(new Sprite(new Texture("images/rock_with_eyes_pixelated.png")), (TiledMapTileLayer) map.getLayers().get(0));
-        player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
-        player.setItemLayer((TiledMapTileLayer) map.getLayers().get(7));
-        //player.setPosition(11 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 14) * player.getCollisionLayer().getTileHeight());
-
-        //Gdx.input.setInputProcessor(player);
+        player.setMap(map);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(new InputProcessor() {
@@ -132,6 +141,8 @@ public class LevelTwo implements Screen {
                     case Input.Keys.ESCAPE:
                         callCharacterMenu();
                         break;
+                    case Input.Keys.SHIFT_LEFT:
+                        player.setSpeed(10);
                     default:
                         break;
                 }
@@ -154,6 +165,8 @@ public class LevelTwo implements Screen {
                     case Input.Keys.DOWN:
                         player.setYVelocity(0);
                         break;
+                    case Input.Keys.SHIFT_LEFT:
+                        player.setSpeed(600);
                     default:
                         break;
                 }
@@ -194,6 +207,34 @@ public class LevelTwo implements Screen {
         Gdx.input.setInputProcessor(inputMultiplexer);
     }
 
+    public void showMessage(String message) {
+        final Table winTable = new Table(skin);
+        winTable.setBackground(skin.getDrawable("default-rect"));
+        winTable.setPosition(320, 614);
+        winTable.setSize(660, 96);
+
+        final Label winLabel = new Label(message, skin);
+        winLabel.setFontScale(2f);
+        winLabel.setAlignment(Align.center);
+
+        winTable.add(winLabel).width(600).height(86).center();
+        stage.addActor(winTable);
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+
+                for(Actor actor : stage.getActors()) {
+                    actor.remove();
+                }
+
+
+
+
+            }
+        }, 2);
+    }
+
     public void callCharacterMenu() {
         game.setScreen(new CharacterMenuScreen(game, player.getRock(), this));
     }
@@ -209,6 +250,7 @@ public class LevelTwo implements Screen {
 
     @Override
     public void resume() {
+
     }
 
     @Override

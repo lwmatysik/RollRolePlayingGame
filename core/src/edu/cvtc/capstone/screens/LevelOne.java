@@ -1,36 +1,21 @@
 package edu.cvtc.capstone.screens;
 
-import aurelienribon.tweenengine.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Timer;
-import edu.cvtc.capstone.Assets;
 import edu.cvtc.capstone.gameobjects.Player;
-import edu.cvtc.capstone.gameobjects.Rock;
-import edu.cvtc.capstone.gameobjects.TopHatMonster;
-import edu.cvtc.capstone.tweenaccessors.ImageAccessor;
-import edu.cvtc.capstone.tweenaccessors.LabelAccessor;
-
-import static edu.cvtc.capstone.Assets.rock;
 
 /**
  * Created by ruhk5 on 4/18/2016.
@@ -44,7 +29,6 @@ public class LevelOne implements Screen {
 
     private Stage stage;
     private Skin skin;
-    private TweenManager tweenManager;
 
     private Player player;
 
@@ -54,9 +38,7 @@ public class LevelOne implements Screen {
 
         stage = new Stage();
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"), new TextureAtlas("ui/uiskin.atlas"));
-        tweenManager = new TweenManager();
 
-        //map = new TmxMapLoader().load("maps/level1.tmx");
         map = new TmxMapLoader().load("maps/LevelOneFinal.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map);
@@ -65,11 +47,6 @@ public class LevelOne implements Screen {
 
         player.setMap(map);
 
-        //player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
-        //player.setItemLayer((TiledMapTileLayer) map.getLayers().get(7));
-
-
-        //player.setPosition(11 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 14) * player.getCollisionLayer().getTileHeight());
         player.setPosition(20 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 25) * player.getCollisionLayer().getTileHeight());
 
     }
@@ -80,13 +57,11 @@ public class LevelOne implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         camera.position.set((int)(player.getX() + player.getWidth() / 2), (int)(player.getY() + player.getHeight() / 2), 0);
-        //camera.zoom = 1.9f;
         camera.zoom = 1.2f;
         camera.update();
 
         renderer.setView(camera);
 
-        //renderer.render(new int[] {1,2,3,4,5});
         renderer.render(new int[] {1,2,3,4,6});
 
         renderer.getBatch().begin();
@@ -96,7 +71,6 @@ public class LevelOne implements Screen {
 
         renderer.render(new int[] {5,7});
 
-        //terrible way of doing this, must rethink
         if (player.readyForNextLevel()) {
             player.setVelocity(new Vector2(0,0));
             game.setScreen(new LevelTwo(game, player, this));
@@ -111,16 +85,12 @@ public class LevelOne implements Screen {
         if (player.readyForBossBattle()) {
             player.setVelocity(new Vector2(0,0));
             game.setScreen(new BattleScreen(game, player, this, 1));
-
-
-
         }
 
         if (player.foundItem()) {
             showMessage(player.getMessage());
         }
 
-        //stage.act(delta);
         stage.draw();
 
 
@@ -135,22 +105,7 @@ public class LevelOne implements Screen {
     @Override
     public void show() {
 
-
-
-
-
-        //player = new Player(new Sprite(new Texture("images/rock_with_eyes_pixelated.png")), (TiledMapTileLayer) map.getLayers().get(0));
-
         player.setMap(map);
-
-        //player.setCollisionLayer((TiledMapTileLayer) map.getLayers().get(0));
-        //player.setItemLayer((TiledMapTileLayer) map.getLayers().get(7));
-        //player.setPosition(11 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 14) * player.getCollisionLayer().getTileHeight());
-
-
-
-
-        //Gdx.input.setInputProcessor(player);
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(new InputProcessor() {
