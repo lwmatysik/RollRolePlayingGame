@@ -29,10 +29,13 @@ public class Player extends Sprite {
     private boolean readyForNextLevel;
     private boolean readyForPreviousLevel;
     private boolean readyForBattle;
+    private boolean foundItem;
+    private String item;
 
     private Vector2 previousPosition;
 
     private float speed = 150 * 2;
+    private float distanceSinceLastBattle = 0;
 
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer itemLayer;
@@ -163,6 +166,12 @@ public class Player extends Sprite {
 
         if (previousLevel) {
             readyForPreviousLevel = true;
+        }
+
+        distanceSinceLastBattle += (Math.sqrt(Math.pow((getX() - oldX), 2) + Math.pow((getY() - oldY), 2)  ) );
+        if ( distanceSinceLastBattle >= 800 ) {
+            readyForBattle = true;
+            distanceSinceLastBattle = 0;
         }
     }
 
