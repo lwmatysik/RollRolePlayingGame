@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.gameobjects;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -24,6 +25,8 @@ public class Player extends Sprite {
     private boolean foundItem;
     private String itemMessage;
 
+    private Music equip;
+
     private float speed = 200;
     private float distanceSinceLastBattle = 0;
 
@@ -38,6 +41,11 @@ public class Player extends Sprite {
         this.setX(10);
         this.setY(10);
         this.rock = rock;
+
+        equip = Gdx.audio.newMusic(Gdx.files.internal("sounds/pickup.ogg"));
+        equip.setLooping(false);
+        equip.setVolume(0.66f);
+
     }
 
     @Override
@@ -117,7 +125,6 @@ public class Player extends Sprite {
                 collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
                 foundItem = true;
                 itemMessage = "You found a potion!";
-
                 rock.addPotion();
             }
 
@@ -129,10 +136,12 @@ public class Player extends Sprite {
                     rock.setSword("Iron Sword", 2);
                     foundItem = true;
                     itemMessage = "You found an Iron Sword!";
+                    equip.play();
                 } else if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("gold")) {
                     rock.setSword("Gold Sword", 3);
                     foundItem = true;
                     itemMessage = "You found a Gold Sword!";
+                    equip.play();
                 }
 
                 collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
@@ -147,10 +156,12 @@ public class Player extends Sprite {
                     rock.setArmor("Iron Armor", 5);
                     foundItem = true;
                     itemMessage = "You found Iron Armor!";
+                    equip.play();
                 } else if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("gold")) {
                     rock.setArmor("Gold Armor", 10);
                     foundItem = true;
                     itemMessage = "You found Gold Armor!";
+                    equip.play();
                 }
                     collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
 

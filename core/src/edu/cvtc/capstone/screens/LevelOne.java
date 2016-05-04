@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -31,6 +32,8 @@ public class LevelOne implements Screen {
     private Skin skin;
 
     private Player player;
+
+    private Music music;
 
     public LevelOne(Game game, Player player) {
         this.game = game;
@@ -73,17 +76,20 @@ public class LevelOne implements Screen {
 
         if (player.readyForNextLevel()) {
             player.setVelocity(new Vector2(0,0));
+            music.pause();
             game.setScreen(new LevelTwo(game, player, this));
         }
 
         if (player.readyForBattle()) {
             player.setVelocity(new Vector2(0,0));
+            music.pause();
             game.setScreen(new BattleScreen(game, player, this, 1));
 
         }
 
         if (player.readyForBossBattle()) {
             player.setVelocity(new Vector2(0,0));
+            music.pause();
             game.setScreen(new BattleScreen(game, player, this, 1));
         }
 
@@ -106,6 +112,12 @@ public class LevelOne implements Screen {
     public void show() {
 
         player.setMap(map);
+
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/dungeon_theme.mp3"));
+
+        music.setLooping(true);
+        music.setVolume(0.66f);
+        music.play();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
         inputMultiplexer.addProcessor(new InputProcessor() {
