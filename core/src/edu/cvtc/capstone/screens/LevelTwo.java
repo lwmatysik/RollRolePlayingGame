@@ -52,6 +52,12 @@ public class LevelTwo implements Screen {
 
         camera = new OrthographicCamera();
 
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/dungeon_theme2.mp3"));
+
+        music.setLooping(true);
+        music.setVolume(0.66f);
+        music.play();
+
 
 
         player.setMap(map);
@@ -126,10 +132,7 @@ public class LevelTwo implements Screen {
 
         player.setMap(map);
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/dungeon_theme2.mp3"));
 
-        music.setLooping(true);
-        music.setVolume(0.66f);
         music.play();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -251,6 +254,7 @@ public class LevelTwo implements Screen {
     }
 
     public void callCharacterMenu() {
+        music.pause();
         game.setScreen(new CharacterMenuScreen(game, player.getRock(), this));
     }
 

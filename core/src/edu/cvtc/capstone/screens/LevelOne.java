@@ -50,6 +50,12 @@ public class LevelOne implements Screen {
 
         player.setMap(map);
 
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/dungeon_theme.mp3"));
+
+        music.setLooping(true);
+        music.setVolume(0.66f);
+        music.play();
+
         player.setPosition(20 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 25) * player.getCollisionLayer().getTileHeight());
 
     }
@@ -113,10 +119,6 @@ public class LevelOne implements Screen {
 
         player.setMap(map);
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/dungeon_theme.mp3"));
-
-        music.setLooping(true);
-        music.setVolume(0.66f);
         music.play();
 
         InputMultiplexer inputMultiplexer = new InputMultiplexer();
@@ -238,6 +240,7 @@ public class LevelOne implements Screen {
     }
 
     public void callCharacterMenu() {
+        music.pause();
         game.setScreen(new CharacterMenuScreen(game, player.getRock(), this));
     }
 

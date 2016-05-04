@@ -28,6 +28,7 @@ public class Player extends Sprite {
     private Music equip;
     private Music squish;
     private Music smash;
+    private Music potion;
 
     private float speed = 100;
     private float distanceSinceLastBattle = 0;
@@ -127,6 +128,7 @@ public class Player extends Sprite {
                 foundItem = true;
                 itemMessage = "You found a potion!";
                 rock.addPotion();
+                potion.play();
             }
 
             if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("sword")) {
@@ -355,6 +357,10 @@ public class Player extends Sprite {
         smash = Gdx.audio.newMusic(Gdx.files.internal("sounds/smash.ogg"));
         smash.setLooping(false);
         smash.setVolume(0.66f);
+
+        potion = Gdx.audio.newMusic(Gdx.files.internal("sounds/potion.ogg"));
+        potion.setLooping(false);
+        potion.setVolume(0.66f);
     }
 
 
