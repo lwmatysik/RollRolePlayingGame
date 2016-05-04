@@ -139,6 +139,10 @@ public class BattleScreen implements Screen {
             public void clicked(InputEvent event, float x, float y) {
                 if (rock.getNumberOfPotionsInInventory() > 0) {
                     rock.usePotion();
+
+                    Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/potion.ogg"));
+                    sound.play(0.9f);
+
                     rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
 
                     if (rock.getNumberOfPotionsInInventory() > 0) {
@@ -326,7 +330,7 @@ public class BattleScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        spriteBatch.dispose();;
+        spriteBatch.dispose();
         music.dispose();
     }
 }
