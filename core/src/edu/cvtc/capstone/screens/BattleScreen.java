@@ -39,6 +39,7 @@ public class BattleScreen implements Screen {
 
     private Image randomMonsterImage;
     private Image rockImage;
+    private Label rockHealth;
 
     private TweenManager tweenManager;
 
@@ -72,9 +73,9 @@ public class BattleScreen implements Screen {
         table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 3.8f);
 
         TextButton attackButton = new TextButton("Attack", skin);
-        TextButton itemButton = new TextButton("Item", skin);
+        final TextButton potionsButton = new TextButton("Potions", skin);
 
-        Label rockHealth = new Label("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth(), skin);
+        rockHealth = new Label("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth(), skin);
         rockHealth.setFontScale(1.5f);
 
         Label monsterName = new Label(randomMonster.toString(), skin);
@@ -82,7 +83,7 @@ public class BattleScreen implements Screen {
 
         table.add(attackButton).width(200f).height(60f).pad(5f).top().left();
         table.row();
-        table.add(itemButton).width(200f).height(60f).pad(5f).left().spaceRight(300f);
+        table.add(potionsButton).width(200f).height(60f).pad(5f).left().spaceRight(300f);
         table.add(rockHealth).width(200f).height(60f).center().spaceRight(300f);
         table.add(monsterName).width(200f).height(60f).right();
 
@@ -112,6 +113,25 @@ public class BattleScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 battleLogic();
+            }
+        });
+
+        potionsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (rock.getNumberOfPotionsInInventory() > 0) {
+                    rock.usePotion();
+                    rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
+
+                    if (rock.getNumberOfPotionsInInventory() > 0) {
+                        potionsButton.setText("No potions left!");
+                        potionsButton.clearListeners();
+                    }
+
+                } else {
+                    potionsButton.setText("No potions left!");
+                    potionsButton.clearListeners();
+                }
             }
         });
 
