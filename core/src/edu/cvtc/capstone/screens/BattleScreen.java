@@ -4,6 +4,8 @@ import aurelienribon.tweenengine.*;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -35,6 +37,7 @@ public class BattleScreen implements Screen {
     private Skin skin;
     private SpriteBatch spriteBatch;
     private Table table;
+    private Music music;
 
     private int currentDungeonLevel;
     private Rock rock;
@@ -73,9 +76,14 @@ public class BattleScreen implements Screen {
         stage = new Stage();
         spriteBatch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"), new TextureAtlas("ui/uiskin.atlas"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/battle_theme.mp3"));
 
         makeHero();
         makeEnemy();
+
+        music.setLooping(true);
+        music.setVolume(0.66f);
+        music.play();
 
         table = new Table(skin);
         table.setBackground(skin.getDrawable("default-rect"));
@@ -153,15 +161,11 @@ public class BattleScreen implements Screen {
         if (!bossFight) {
             Gdx.input.setInputProcessor(null);
 
-            Integer rockDamagesMonster = rock.getAttack() * (critical.nextInt(12) + 12) - randomMonster.getDefenseModifier();
-            Integer monsterDamagesRock = randomMonster.getAttackModifier() * (critical.nextInt(12) + 12) - rock.getDefense();
+            final Integer rockDamagesMonster = rock.getAttack() * (critical.nextInt(12) + 12) - randomMonster.getDefenseModifier();
+            final Integer monsterDamagesRock = randomMonster.getAttackModifier() * (critical.nextInt(12) + 12) - rock.getDefense();
 
             randomMonster.setCurrentHealth(randomMonster.getCurrentHealth() - rockDamagesMonster);
             rock.setCurrentHealth(rock.getCurrentHealth() - monsterDamagesRock);
-
-            damageToMonster = rockDamagesMonster.toString();
-            damageToRock = monsterDamagesRock.toString();
-            rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
 
             Timeline.createSequence()
                     .push(Tween.to(rockImage, ImageAccessor.X, 0.4f).target(Gdx.graphics.getWidth() - 300f, Gdx.graphics.getHeight() / 3f).delay(0.50f))
@@ -187,6 +191,17 @@ public class BattleScreen implements Screen {
                     })
                     .start(tweenManager);
 
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/smash.ogg"));
+                    sound.play(0.9f);
+                    damageToMonster = rockDamagesMonster.toString();
+                    damageToRock = monsterDamagesRock.toString();
+                    rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
+                }
+            }, 2);
+
         } else {
             // bossfight
         }
@@ -207,6 +222,12 @@ public class BattleScreen implements Screen {
 
         winTable.add(winLabel).width(600).height(86).center();
         stage.addActor(winTable);
+
+        music.stop();
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/victory_jingle.ogg"));
+        music.setLooping(false);
+        music.setVolume(0.71f);
+        music.play();
 
         Tween.registerAccessor(Label.class, new LabelAccessor());
 
@@ -276,8 +297,8 @@ public class BattleScreen implements Screen {
         stage.draw();
 
         spriteBatch.begin();
-        Assets.fanwoodText42White.draw(spriteBatch, damageToMonster, Gdx.graphics.getWidth() / 6f + 124, Gdx.graphics.getHeight() / 3f - 10);
-        Assets.fanwoodText42White.draw(spriteBatch, damageToRock, Gdx.graphics.getWidth() - 140, Gdx.graphics.getHeight() / 3f - 10);
+        Assets.fanwoodText42White.draw(spriteBatch, damageToMonster, Gdx.graphics.getWidth() / 6f + 122, Gdx.graphics.getHeight() / 3f - 8);
+        Assets.fanwoodText42White.draw(spriteBatch, damageToRock, Gdx.graphics.getWidth() - 140, Gdx.graphics.getHeight() / 3f - 8);
         spriteBatch.end();
 
     }
@@ -306,5 +327,6 @@ public class BattleScreen implements Screen {
     public void dispose() {
         stage.dispose();
         spriteBatch.dispose();;
+        music.dispose();
     }
 }

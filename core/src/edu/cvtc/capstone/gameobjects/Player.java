@@ -104,7 +104,7 @@ public class Player extends Sprite {
             if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("sword")) {
 
                 itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
-                rock.setSword("Iron Sword" , 20);
+                rock.setSword("Iron Sword" , 2);
                 //readyForBattle = true;
             }
 
