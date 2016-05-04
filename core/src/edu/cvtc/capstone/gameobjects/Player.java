@@ -26,9 +26,12 @@ public class Player extends Sprite {
     private String itemMessage;
 
     private Music equip;
+    private Music squish;
+    private Music smash;
 
-    private float speed = 200;
+    private float speed = 100;
     private float distanceSinceLastBattle = 0;
+    private float distanceSinceLastSquish = 0;
 
     private TiledMapTileLayer collisionLayer;
     private TiledMapTileLayer itemLayer;
@@ -42,9 +45,7 @@ public class Player extends Sprite {
         this.setY(10);
         this.rock = rock;
 
-        equip = Gdx.audio.newMusic(Gdx.files.internal("sounds/pickup.ogg"));
-        equip.setLooping(false);
-        equip.setVolume(0.66f);
+        initSounds();
 
     }
 
@@ -173,7 +174,8 @@ public class Player extends Sprite {
         if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("door")) {
             itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
 
-            //collisionLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
+            collisionLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
+            smash.play();
         }
 
         if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("boss")) {
@@ -218,9 +220,16 @@ public class Player extends Sprite {
         }
 
         distanceSinceLastBattle += (Math.sqrt(Math.pow((getX() - oldX), 2) + Math.pow((getY() - oldY), 2)  ) );
+        distanceSinceLastSquish += (Math.sqrt(Math.pow((getX() - oldX), 2) + Math.pow((getY() - oldY), 2)  ) );
+
         if ( distanceSinceLastBattle >= 8000 ) {
             readyForBattle = true;
             distanceSinceLastBattle = 0;
+        }
+
+        if (distanceSinceLastSquish >= 48 ) {
+            squish.play();
+            distanceSinceLastSquish = 0;
         }
     }
 
@@ -332,6 +341,20 @@ public class Player extends Sprite {
 
     public Rock getRock() {
         return this.rock;
+    }
+
+    private void initSounds() {
+        equip = Gdx.audio.newMusic(Gdx.files.internal("sounds/pickup.ogg"));
+        equip.setLooping(false);
+        equip.setVolume(0.66f);
+
+        squish = Gdx.audio.newMusic(Gdx.files.internal("sounds/stomp.ogg"));
+        squish.setLooping(false);
+        squish.setVolume(0.66f);
+
+        smash = Gdx.audio.newMusic(Gdx.files.internal("sounds/smash.ogg"));
+        smash.setLooping(false);
+        smash.setVolume(0.66f);
     }
 
 
