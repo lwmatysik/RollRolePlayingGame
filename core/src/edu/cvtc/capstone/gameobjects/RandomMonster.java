@@ -58,6 +58,14 @@ public class RandomMonster {
         return randomMonsterImageString;
     }
 
+    public int getAttackModifier() {
+        return attackModifier;
+    }
+
+    public int getDefenseModifier() {
+        return defenseModifier;
+    }
+
     @Override
     public String toString() {
         return randomMonsterImageString.substring(7, randomMonsterImageString.lastIndexOf('.')).toUpperCase();

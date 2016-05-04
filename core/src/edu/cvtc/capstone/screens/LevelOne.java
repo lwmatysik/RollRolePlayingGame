@@ -37,7 +37,7 @@ public class LevelOne implements Screen {
         this.player = player;
 
         //map = new TmxMapLoader().load("maps/level1.tmx");
-        map = new TmxMapLoader().load("maps/levelOneFinal.tmx");
+        map = new TmxMapLoader().load("maps/LevelOneFinal.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map);
 
@@ -86,7 +86,7 @@ public class LevelOne implements Screen {
         if (player.readyForBattle()) {
             player.removeBattle();
             player.setVelocity(new Vector2(0,0));
-            game.setScreen(new BattleScreen(game, player, player.getRock(), 1));
+            game.setScreen(new BattleScreen(game, player, this, 1));
         }
 
 
