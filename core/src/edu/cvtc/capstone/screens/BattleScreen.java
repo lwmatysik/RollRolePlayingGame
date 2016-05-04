@@ -4,6 +4,8 @@ import aurelienribon.tweenengine.*;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,10 +14,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Timer;
+import edu.cvtc.capstone.Assets;
 import edu.cvtc.capstone.gameobjects.Player;
 import edu.cvtc.capstone.gameobjects.RandomMonster;
 import edu.cvtc.capstone.gameobjects.Rock;
 import edu.cvtc.capstone.tweenaccessors.ImageAccessor;
+import edu.cvtc.capstone.tweenaccessors.LabelAccessor;
 
 import java.util.Random;
 
@@ -26,10 +32,12 @@ public class BattleScreen implements Screen {
 
     private Game game;
     private Player player;
+    private Screen previousScreen;
     private Stage stage;
     private Skin skin;
     private SpriteBatch spriteBatch;
     private Table table;
+    private Music music;
 
     private int currentDungeonLevel;
     private Rock rock;
@@ -39,22 +47,28 @@ public class BattleScreen implements Screen {
 
     private Image randomMonsterImage;
     private Image rockImage;
+    private Label rockHealth;
 
     private TweenManager tweenManager;
 
-    public BattleScreen(Game game, Player player, Rock rock, int currentDungeonLevel) {
+    private String damageToMonster = "";
+    private String damageToRock = "";
+
+    public BattleScreen(Game game, Player player, Screen screen, int currentDungeonLevel) {
         this.game = game;
         this.player = player;
         this.currentDungeonLevel = currentDungeonLevel;
-        this.rock = rock;
+        this.rock = player.getRock();
+        this.previousScreen = screen;
     }
 
-    public BattleScreen(Game game, Player player, Rock rock, int currentDungeonLevel, boolean bossFight) {
+    public BattleScreen(Game game, Player player, Screen screen, int currentDungeonLevel, boolean bossFight) {
         this.game = game;
         this.player = player;
         this.currentDungeonLevel = currentDungeonLevel;
-        this.rock = rock;
+        this.rock = player.getRock();
         this.bossFight = true;
+        this.previousScreen = screen;
     }
 
     @Override
@@ -62,19 +76,24 @@ public class BattleScreen implements Screen {
         stage = new Stage();
         spriteBatch = new SpriteBatch();
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"), new TextureAtlas("ui/uiskin.atlas"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/battle_theme.mp3"));
 
         makeHero();
         makeEnemy();
-        
+
+        music.setLooping(true);
+        music.setVolume(0.66f);
+        music.play();
+
         table = new Table(skin);
         table.setBackground(skin.getDrawable("default-rect"));
         table.setPosition(0, 0);
         table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 3.8f);
 
         TextButton attackButton = new TextButton("Attack", skin);
-        TextButton itemButton = new TextButton("Item", skin);
+        final TextButton potionsButton = new TextButton("Potions", skin);
 
-        Label rockHealth = new Label("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth(), skin);
+        rockHealth = new Label("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth(), skin);
         rockHealth.setFontScale(1.5f);
 
         Label monsterName = new Label(randomMonster.toString(), skin);
@@ -82,7 +101,7 @@ public class BattleScreen implements Screen {
 
         table.add(attackButton).width(200f).height(60f).pad(5f).top().left();
         table.row();
-        table.add(itemButton).width(200f).height(60f).pad(5f).left().spaceRight(300f);
+        table.add(potionsButton).width(200f).height(60f).pad(5f).left().spaceRight(300f);
         table.add(rockHealth).width(200f).height(60f).center().spaceRight(300f);
         table.add(monsterName).width(200f).height(60f).right();
 
@@ -115,13 +134,42 @@ public class BattleScreen implements Screen {
             }
         });
 
+        potionsButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                if (rock.getNumberOfPotionsInInventory() > 0) {
+                    rock.usePotion();
+
+                    Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/potion.ogg"));
+                    sound.play(0.9f);
+
+                    rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
+
+                    if (rock.getNumberOfPotionsInInventory() > 0) {
+                        potionsButton.setText("No potions left!");
+                        potionsButton.clearListeners();
+                    }
+
+                } else {
+                    potionsButton.setText("No potions left!");
+                    potionsButton.clearListeners();
+                }
+            }
+        });
+
     }
 
     private void battleLogic() {
-        Random random = new Random();
+        Random critical = new Random();
 
         if (!bossFight) {
             Gdx.input.setInputProcessor(null);
+
+            final Integer rockDamagesMonster = rock.getAttack() * (critical.nextInt(12) + 12) - randomMonster.getDefenseModifier();
+            final Integer monsterDamagesRock = randomMonster.getAttackModifier() * (critical.nextInt(12) + 12) - rock.getDefense();
+
+            randomMonster.setCurrentHealth(randomMonster.getCurrentHealth() - rockDamagesMonster);
+            rock.setCurrentHealth(rock.getCurrentHealth() - monsterDamagesRock);
 
             Timeline.createSequence()
                     .push(Tween.to(rockImage, ImageAccessor.X, 0.4f).target(Gdx.graphics.getWidth() - 300f, Gdx.graphics.getHeight() / 3f).delay(0.50f))
@@ -131,14 +179,100 @@ public class BattleScreen implements Screen {
                     .setCallback(new TweenCallback() {
                         @Override
                         public void onEvent(int i, BaseTween<?> baseTween) {
-                            Gdx.input.setInputProcessor(stage);
+
+                            if (rock.getCurrentHealth() > 0) {
+
+                                if (randomMonster.getCurrentHealth() < 1) {
+                                    playerWins();
+                                } else {
+                                    Gdx.input.setInputProcessor(stage);
+                                }
+                            } else {
+                                // Need Teia's Game Over Screen
+                                System.out.println("you lose");
+                            }
                         }
                     })
                     .start(tweenManager);
 
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/smash.ogg"));
+                    sound.play(0.9f);
+                    damageToMonster = rockDamagesMonster.toString();
+                    damageToRock = monsterDamagesRock.toString();
+                    rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
+                }
+            }, 2);
+
         } else {
             // bossfight
         }
+    }
+
+    private void playerWins() {
+        rock.setExperiencePoints(rock.getExperiencePoints() + 100);
+        rock.setLevelUpCounter(rock.getLevelUpCounter() + 100);
+
+        Table winTable = new Table(skin);
+        winTable.setBackground(skin.getDrawable("default-rect"));
+        winTable.setPosition(320, 614);
+        winTable.setSize(660, 96);
+
+        final Label winLabel = new Label("You win.", skin);
+        winLabel.setFontScale(2f);
+        winLabel.setAlignment(Align.center);
+
+        winTable.add(winLabel).width(600).height(86).center();
+        stage.addActor(winTable);
+
+        music.stop();
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/victory_jingle.ogg"));
+        music.setLooping(false);
+        music.setVolume(0.71f);
+        music.play();
+
+        Tween.registerAccessor(Label.class, new LabelAccessor());
+
+        if (rock.getLevelUpCounter() == 500) {
+
+            rock.setLevelUpCounter(0);
+            rock.levelUp();
+
+            Timeline.createSequence()
+                    .push(Tween.to(winLabel, LabelAccessor.ALPHA, 0.7f).target(0))
+                    .setCallback(new TweenCallback() {
+                        @Override
+                        public void onEvent(int i, BaseTween<?> baseTween) {
+                            winLabel.setFontScale(1.25f);
+                            winLabel.setText("Rock's new ATK = " + rock.getAttack() + ", DEF = " + rock.getDefense() + ", Max Health = " + rock.getMaxHealth() + ".");
+                        }
+                    }).delay(1.5f)
+                    .push(Tween.to(winLabel, LabelAccessor.ALPHA, 0.7f).target(1))
+                    .start(tweenManager);
+
+        } else {
+
+            Timeline.createSequence()
+                    .push(Tween.to(winLabel, LabelAccessor.ALPHA, 0.7f).target(0))
+                    .setCallback(new TweenCallback() {
+                        @Override
+                        public void onEvent(int i, BaseTween<?> baseTween) {
+                            winLabel.setText("Rock gains 100 Exp.");
+                        }
+                    })
+                    .push(Tween.to(winLabel, LabelAccessor.ALPHA, 1.5f).target(1))
+                    .start(tweenManager);
+        }
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+                game.setScreen(previousScreen);
+            }
+        }, 10);
+
     }
 
     private void makeHero() {
@@ -163,11 +297,13 @@ public class BattleScreen implements Screen {
 
         tweenManager.update(delta);
 
-        spriteBatch.begin();
-        spriteBatch.end();
-
         stage.act(delta);
         stage.draw();
+
+        spriteBatch.begin();
+        Assets.fanwoodText42White.draw(spriteBatch, damageToMonster, Gdx.graphics.getWidth() / 6f + 122, Gdx.graphics.getHeight() / 3f - 8);
+        Assets.fanwoodText42White.draw(spriteBatch, damageToRock, Gdx.graphics.getWidth() - 140, Gdx.graphics.getHeight() / 3f - 8);
+        spriteBatch.end();
 
     }
 
@@ -194,8 +330,7 @@ public class BattleScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
-        spriteBatch.dispose();;
+        spriteBatch.dispose();
+        music.dispose();
     }
 }
-
-

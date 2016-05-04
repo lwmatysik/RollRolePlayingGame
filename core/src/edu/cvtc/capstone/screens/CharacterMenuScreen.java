@@ -1,6 +1,7 @@
 package edu.cvtc.capstone.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -129,6 +130,8 @@ public class CharacterMenuScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 if (rock.getCurrentHealth() != rock.getMaxHealth()) {
+                    Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/potion.ogg"));
+                    sound.play(0.9f);
                     rock.usePotion();
                     show();
                 }

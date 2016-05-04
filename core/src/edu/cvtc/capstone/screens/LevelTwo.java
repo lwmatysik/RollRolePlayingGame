@@ -71,14 +71,12 @@ public class LevelTwo implements Screen {
         //renderer.render(new int[] {1});
 
         //terrible way of doing this, must rethink
-        if (player.nextLevel()) {
-            player.removeNextLevel();
+        if (player.readyForNextLevel()) {
             player.setVelocity(new Vector2(0,0));
             game.setScreen(new CharacterMenuScreen(game, new Rock(), this));
         }
 
-        if (player.previousLevel()) {
-            player.removePreviousLevel();
+        if (player.readyForPreviousLevel()) {
             player.setVelocity(new Vector2(0,0));
             player.setPosition(930,770);
             game.setScreen(previousScreen);

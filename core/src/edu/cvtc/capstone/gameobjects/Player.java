@@ -29,8 +29,9 @@ public class Player extends Sprite {
     private boolean readyForNextLevel;
     private boolean readyForPreviousLevel;
     private boolean readyForBattle;
+    private boolean readyForBoss;
     private boolean foundItem;
-    private String item;
+    private String itemMessage;
 
     private Vector2 previousPosition;
 
@@ -56,18 +57,58 @@ public class Player extends Sprite {
         super.draw(spriteBatch);
     }
 
-    public boolean nextLevel() {
-        return readyForNextLevel;
+    public boolean foundItem() {
+        if (this.foundItem) {
+            foundItem = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public boolean readyForBattle() { return readyForBattle; }
+    public boolean readyForBossBattle() {
+        if (this.readyForBoss) {
+            readyForBoss = false;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String getMessage() {
+        return itemMessage;
+    }
+
+    public boolean readyForNextLevel() {
+        if (this.readyForNextLevel) {
+            readyForNextLevel = false;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public boolean readyForBattle() {
+
+        if (this.readyForBattle) {
+            readyForBattle = false;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public void removeNextLevel() {
         readyForNextLevel = false;
     }
 
-    public boolean previousLevel() {
-        return readyForPreviousLevel;
+    public boolean readyForPreviousLevel() {
+        if (this.readyForPreviousLevel) {
+            readyForPreviousLevel = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void removeBattle() {
@@ -100,14 +141,30 @@ public class Player extends Sprite {
             if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("potion")) {
 
                 itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
+                collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
+                foundItem = true;
+                itemMessage = "You found a potion!";
+
                 rock.addPotion();
-                readyForBattle = true;
             }
 
             if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("sword")) {
 
                 itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
-                rock.setSword("Iron Sword" , 20);
+                collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
+                rock.setSword("Iron Sword" , 2);
+                foundItem = true;
+                itemMessage = "You found an Iron Sword!";
+                //readyForBattle = true;
+            }
+
+            if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("armor")) {
+
+                itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
+                collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
+                rock.setArmor("Iron Armor", 2);
+                foundItem = true;
+                itemMessage = "You found Iron Armor!";
                 //readyForBattle = true;
             }
 
@@ -118,6 +175,12 @@ public class Player extends Sprite {
             itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
 
             //collisionLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
+        }
+
+        if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("boss")) {
+            itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
+            collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
+            readyForBoss = true;
         }
 
 //        if (detectXCollision("chest") || detectYCollision("chest")) {

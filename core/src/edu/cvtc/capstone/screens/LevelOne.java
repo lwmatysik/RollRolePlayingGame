@@ -1,9 +1,11 @@
 package edu.cvtc.capstone.screens;
 
+import aurelienribon.tweenengine.*;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -12,11 +14,21 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.scenes.scene2d.Actor;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Timer;
 import edu.cvtc.capstone.Assets;
 import edu.cvtc.capstone.gameobjects.Player;
 import edu.cvtc.capstone.gameobjects.Rock;
 import edu.cvtc.capstone.gameobjects.TopHatMonster;
+import edu.cvtc.capstone.tweenaccessors.ImageAccessor;
+import edu.cvtc.capstone.tweenaccessors.LabelAccessor;
 
 import static edu.cvtc.capstone.Assets.rock;
 
@@ -30,14 +42,22 @@ public class LevelOne implements Screen {
     private OrthographicCamera camera;
     private Game game;
 
+    private Stage stage;
+    private Skin skin;
+    private TweenManager tweenManager;
+
     private Player player;
 
     public LevelOne(Game game, Player player) {
         this.game = game;
         this.player = player;
 
+        stage = new Stage();
+        skin = new Skin(Gdx.files.internal("ui/uiskin.json"), new TextureAtlas("ui/uiskin.atlas"));
+        tweenManager = new TweenManager();
+
         //map = new TmxMapLoader().load("maps/level1.tmx");
-        map = new TmxMapLoader().load("maps/levelOneFinal.tmx");
+        map = new TmxMapLoader().load("maps/LevelOneFinal.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map);
 
@@ -77,17 +97,28 @@ public class LevelOne implements Screen {
         renderer.render(new int[] {5,7});
 
         //terrible way of doing this, must rethink
-        if (player.nextLevel()) {
-            player.removeNextLevel();
+        if (player.readyForNextLevel()) {
             player.setVelocity(new Vector2(0,0));
             game.setScreen(new LevelTwo(game, player, this));
         }
 
         if (player.readyForBattle()) {
-            player.removeBattle();
             player.setVelocity(new Vector2(0,0));
-            game.setScreen(new BattleScreen(game, player, player.getRock(), 1));
+            game.setScreen(new BattleScreen(game, player, this, 1));
         }
+
+        if (player.readyForBossBattle()) {
+            player.setVelocity(new Vector2(0,0));
+            game.setScreen(new BattleScreen(game, player, this, 1));
+
+        }
+
+        if (player.foundItem()) {
+            showMessage(player.getMessage());
+        }
+
+        //stage.act(delta);
+        stage.draw();
 
 
     }
@@ -100,6 +131,8 @@ public class LevelOne implements Screen {
 
     @Override
     public void show() {
+
+
 
 
 
@@ -204,6 +237,34 @@ public class LevelOne implements Screen {
         });
 
         Gdx.input.setInputProcessor(inputMultiplexer);
+    }
+
+    public void showMessage(String message) {
+        final Table winTable = new Table(skin);
+        winTable.setBackground(skin.getDrawable("default-rect"));
+        winTable.setPosition(320, 614);
+        winTable.setSize(660, 96);
+
+        final Label winLabel = new Label(message, skin);
+        winLabel.setFontScale(2f);
+        winLabel.setAlignment(Align.center);
+
+        winTable.add(winLabel).width(600).height(86).center();
+        stage.addActor(winTable);
+
+        Timer.schedule(new Timer.Task() {
+            @Override
+            public void run() {
+
+                for(Actor actor : stage.getActors()) {
+                    actor.remove();
+                }
+
+
+
+
+            }
+        }, 2);
     }
 
     public void callCharacterMenu() {

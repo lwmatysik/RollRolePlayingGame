@@ -19,7 +19,7 @@ public class Assets {
 
     public static TiledMap map;
 
-    public static BitmapFont fanwoodText18;
+    public static BitmapFont fanwoodText42White;
 
     public static Texture loadTexture(String file) {
         return new Texture(Gdx.files.internal(file));
@@ -41,9 +41,7 @@ public class Assets {
 
     public static void load() {
         rock = loadTexture("images/rock_with_eyes_pixelated30.png");
-        topHatMonster = loadTexture("images/top_hat_monster.png");
-        fanwoodText18 = loadFont("fonts/Fanwood Text.otf", Color.WHITE, 18);
-        map = loadMap("maps/Test.tmx");
+        fanwoodText42White = loadFont("fonts/Fanwood Text.otf", Color.WHITE, 42);
     }
 
 }

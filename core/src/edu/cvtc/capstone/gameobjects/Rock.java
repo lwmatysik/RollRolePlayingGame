@@ -13,6 +13,7 @@ public class Rock {
     private int maxHealth;
     private int currentHealth;
     private int numberOfPotionsInInventory;
+    private int levelUpCounter;
 
     private Sword sword;
     private Armor armor;
@@ -21,10 +22,11 @@ public class Rock {
 
         this.characterLevel = 1;
         this.experiencePoints = 0;
+        this.levelUpCounter = 0;
         this.attack = 1;
         this.defense = 1;
         this.maxHealth = 100;
-        this.currentHealth = 50;
+        this.currentHealth = 100;
         this.numberOfPotionsInInventory = 1;
         this.armor = new Armor("Leather", 1);
         this.sword = new Sword("Wood", 1);
@@ -34,7 +36,7 @@ public class Rock {
         this.characterLevel += 1;
         this.attack += 1;
         this.defense += 1;
-        this.maxHealth += 100;
+        this.maxHealth += 50;
     }
 
     public int getCharacterLevel() {
@@ -47,6 +49,14 @@ public class Rock {
 
     public int getExperiencePoints() {
         return experiencePoints;
+    }
+
+    public int getLevelUpCounter() {
+        return levelUpCounter;
+    }
+
+    public void setLevelUpCounter(int levelUpCounter) {
+        this.levelUpCounter = levelUpCounter;
     }
 
     public void setExperiencePoints(int experiencePoints) {
