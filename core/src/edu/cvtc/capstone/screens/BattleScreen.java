@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Timer;
 import edu.cvtc.capstone.Assets;
+import edu.cvtc.capstone.gameobjects.BossMonster;
 import edu.cvtc.capstone.gameobjects.Player;
 import edu.cvtc.capstone.gameobjects.RandomMonster;
 import edu.cvtc.capstone.gameobjects.Rock;
@@ -44,9 +45,11 @@ public class BattleScreen implements Screen {
 
     private boolean bossFight = false;
     private RandomMonster randomMonster;
+    private BossMonster bossMonster;
 
-    private Image randomMonsterImage;
-    private Image rockImage;
+    protected Image bossMonsterImage;
+    protected Image randomMonsterImage;
+    protected Image rockImage;
     private Label rockHealth;
 
     private TweenManager tweenManager;
@@ -82,7 +85,7 @@ public class BattleScreen implements Screen {
         makeEnemy();
 
         music.setLooping(true);
-        music.setVolume(0.66f);
+        music.setVolume(0.61f);
         music.play();
 
         table = new Table(skin);
@@ -96,7 +99,14 @@ public class BattleScreen implements Screen {
         rockHealth = new Label("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth(), skin);
         rockHealth.setFontScale(1.5f);
 
-        Label monsterName = new Label(randomMonster.toString(), skin);
+        Label monsterName = new Label("", skin);
+
+        if (!bossFight) {
+            monsterName.setText(randomMonster.toString());
+        } else {
+            monsterName.setText(bossMonster.toString());
+        }
+
         monsterName.setFontScale(1.5f);
 
         table.add(attackButton).width(200f).height(60f).pad(5f).top().left();
@@ -116,9 +126,15 @@ public class BattleScreen implements Screen {
 
         stage.addActor(battleBackground);
 
-        randomMonsterImage.setPosition(Gdx.graphics.getWidth() / 6f, Gdx.graphics.getHeight() / 3f);
-        randomMonsterImage.scaleBy(2.25f);
-        stage.addActor(randomMonsterImage);
+        if (!bossFight) {
+            randomMonsterImage.setPosition(Gdx.graphics.getWidth() / 6f, Gdx.graphics.getHeight() / 3f);
+            randomMonsterImage.scaleBy(2.25f);
+            stage.addActor(randomMonsterImage);
+        } else {
+            bossMonsterImage.setPosition(Gdx.graphics.getWidth() / 6f, Gdx.graphics.getHeight() / 3f);
+            bossMonsterImage.scaleBy(2.25f);
+            stage.addActor(bossMonsterImage);
+        }
 
         rockImage.setPosition(Gdx.graphics.getWidth() - 200f, Gdx.graphics.getHeight() / 3f);
         rockImage.scaleBy(0.90f);
@@ -207,13 +223,60 @@ public class BattleScreen implements Screen {
             }, 2);
 
         } else {
-            // bossfight
+            Gdx.input.setInputProcessor(null);
+
+            final Integer rockDamagesMonster = rock.getAttack() * (critical.nextInt(12) + 12) - bossMonster.getDefenseModifier();
+            final Integer monsterDamagesRock = bossMonster.getAttackModifier() * (critical.nextInt(12) + 12) - rock.getDefense();
+
+            bossMonster.setCurrentHealth(bossMonster.getCurrentHealth() - rockDamagesMonster);
+            rock.setCurrentHealth(rock.getCurrentHealth() - monsterDamagesRock);
+
+            Timeline.createSequence()
+                    .push(Tween.to(rockImage, ImageAccessor.X, 0.4f).target(Gdx.graphics.getWidth() - 300f, Gdx.graphics.getHeight() / 3f).delay(0.50f))
+                    .push(Tween.to(bossMonsterImage, ImageAccessor.ALPHA, 0.10f).repeatYoyo(6, 0.10f))
+                    .push(Tween.to(bossMonsterImage, ImageAccessor.ALPHA, 0f).target(1))
+                    .push(Tween.to(rockImage, ImageAccessor.X, 0.4f).target(Gdx.graphics.getWidth() - 200f, Gdx.graphics.getHeight() / 3f).delay(0.50f))
+                    .setCallback(new TweenCallback() {
+                        @Override
+                        public void onEvent(int i, BaseTween<?> baseTween) {
+
+                            if (rock.getCurrentHealth() > 0) {
+
+                                if (bossMonster.getCurrentHealth() < 1) {
+                                    playerWins();
+                                } else {
+                                    Gdx.input.setInputProcessor(stage);
+                                }
+                            } else {
+                                // Need Teia's Game Over Screen
+                                System.out.println("you lose");
+                            }
+                        }
+                    })
+                    .start(tweenManager);
+
+            Timer.schedule(new Timer.Task() {
+                @Override
+                public void run() {
+                    Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/smash.ogg"));
+                    sound.play(0.9f);
+                    damageToMonster = rockDamagesMonster.toString();
+                    damageToRock = monsterDamagesRock.toString();
+                    rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
+                }
+            }, 2);
         }
     }
 
     private void playerWins() {
-        rock.setExperiencePoints(rock.getExperiencePoints() + 100);
-        rock.setLevelUpCounter(rock.getLevelUpCounter() + 100);
+
+        if (!bossFight) {
+            rock.setExperiencePoints(rock.getExperiencePoints() + 100);
+            rock.setLevelUpCounter(rock.getLevelUpCounter() + 100);
+        } else {
+            rock.setExperiencePoints(rock.getExperiencePoints() + 250);
+            rock.setLevelUpCounter(rock.getLevelUpCounter() + 250);
+        }
 
         Table winTable = new Table(skin);
         winTable.setBackground(skin.getDrawable("default-rect"));
@@ -259,7 +322,11 @@ public class BattleScreen implements Screen {
                     .setCallback(new TweenCallback() {
                         @Override
                         public void onEvent(int i, BaseTween<?> baseTween) {
-                            winLabel.setText("Rock gains 100 Exp.");
+                            if (!bossFight) {
+                                winLabel.setText("Rock gains 100 Exp.");
+                            } else {
+                                winLabel.setText("Rock gains 250 Exp.");
+                            }
                         }
                     })
                     .push(Tween.to(winLabel, LabelAccessor.ALPHA, 1.5f).target(1))
@@ -286,7 +353,9 @@ public class BattleScreen implements Screen {
             Texture randomMonsterTexture = new Texture(Gdx.files.internal(randomMonster.getFileString()));
             randomMonsterImage = new Image(randomMonsterTexture);
         } else {
-            // boss logic
+            bossMonster = new BossMonster(currentDungeonLevel);
+            Texture bossMonsterTexture = new Texture(Gdx.files.internal(bossMonster.getFileString()));
+            bossMonsterImage = new Image(bossMonsterTexture);
         }
     }
 

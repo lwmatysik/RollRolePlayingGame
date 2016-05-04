@@ -90,7 +90,7 @@ public class LevelOne implements Screen {
         if (player.readyForBossBattle()) {
             player.setVelocity(new Vector2(0,0));
             music.pause();
-            game.setScreen(new BattleScreen(game, player, this, 1));
+            game.setScreen(new BattleScreen(game, player, this, 1, true));
         }
 
         if (player.foundItem()) {

@@ -12,12 +12,10 @@ public class RandomMonster {
     private int maxHealth;
     private int attackModifier;
     private int defenseModifier;
-    private int currentLevel;
     private ArrayList<String> monsterImageFileList;
     private String randomMonsterImageString;
 
     public RandomMonster(int currentLevel) {
-        this.currentLevel = currentLevel;
 
         this.currentHealth = currentLevel * 50;
         this.maxHealth = currentLevel * 50;
