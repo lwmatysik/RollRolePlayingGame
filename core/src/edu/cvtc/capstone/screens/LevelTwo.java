@@ -102,14 +102,14 @@ public class LevelTwo implements Screen {
         if (player.readyForBattle()) {
             player.setVelocity(new Vector2(0,0));
             music.pause();
-            game.setScreen(new BattleScreen(game, player, this, 1));
+            game.setScreen(new BattleScreen(game, player, this, 2));
 
         }
 
         if (player.readyForBossBattle()) {
             player.setVelocity(new Vector2(0,0));
             music.pause();
-            game.setScreen(new BattleScreen(game, player, this, 1));
+            game.setScreen(new BattleScreen(game, player, this, 2, true));
         }
 
         if (player.foundItem()) {
