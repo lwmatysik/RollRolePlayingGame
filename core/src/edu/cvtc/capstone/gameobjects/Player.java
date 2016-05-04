@@ -151,6 +151,7 @@ public class Player extends Sprite {
             if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("sword")) {
 
                 itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
+
                 collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
                 rock.setSword("Iron Sword" , 2);
                 foundItem = true;
@@ -165,6 +166,9 @@ public class Player extends Sprite {
                 rock.setArmor("Iron Armor", 2);
                 foundItem = true;
                 itemMessage = "You found Iron Armor!";
+
+                rock.setSword("Iron Sword" , 2);
+
                 //readyForBattle = true;
             }
 

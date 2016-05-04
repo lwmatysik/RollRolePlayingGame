@@ -105,11 +105,14 @@ public class LevelOne implements Screen {
         if (player.readyForBattle()) {
             player.setVelocity(new Vector2(0,0));
             game.setScreen(new BattleScreen(game, player, this, 1));
+
         }
 
         if (player.readyForBossBattle()) {
             player.setVelocity(new Vector2(0,0));
             game.setScreen(new BattleScreen(game, player, this, 1));
+
+
 
         }
 
