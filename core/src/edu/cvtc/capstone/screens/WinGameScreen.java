@@ -3,6 +3,7 @@ package edu.cvtc.capstone.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -41,15 +42,20 @@ public class WinGameScreen implements Screen{
 		stage = new Stage();
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("ui/uiskin.json"), new TextureAtlas("ui/uiskin.atlas"));
+
+		final Music music = Gdx.audio.newMusic(Gdx.files.internal("music/game_win_music.ogg"));
+		music.setVolume(0.68f);
+		music.play();
+
 		Gdx.input.setInputProcessor(stage);
 		texture = new Texture(Gdx.files.internal("images/castle_background.png"));
 	    Texture enemyTexture = new Texture(Gdx.files.internal("images/top_hat_monster.png"));
-	    Texture rockTexture = new Texture(Gdx.files.internal("images/rock_with_eyes.png"));
+	    Texture rockTexture = new Texture(Gdx.files.internal("images/rock_with_eyes_andhat.png"));
 	    Image rock = new Image(rockTexture);
-	    rock.setPosition(900, 170);
+	    rock.setPosition(900, 163);
 	    
 	    Image enemy = new Image(enemyTexture);
-	    enemy.setPosition(300, 170);
+	    enemy.setPosition(300, 163);
 	    
 	    Label label = new Label("HAHA! You beat my dungeon!",skin);
 
@@ -59,9 +65,10 @@ public class WinGameScreen implements Screen{
 	    label.setHeight(200);
 	    label.setFontScale(2);
 	    
-	    createBasicSkin();
         TextButton theEndButton = new TextButton("The End", skin);
         theEndButton.setPosition(500, 400);
+		theEndButton.setWidth(300);
+		theEndButton.setHeight(100);
 		
 	    stage.addActor(label);
 	    stage.addActor(theEndButton);
@@ -73,29 +80,10 @@ public class WinGameScreen implements Screen{
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new CreditsScreen(game, player));
+				music.stop();
             }
         });
 	}
-	
-	private void createBasicSkin() {
-        BitmapFont font = new BitmapFont();
-        skin = new Skin();
-        skin.add("default", font);
-
-        Pixmap pixmap = new Pixmap((int)Gdx.graphics.getWidth()/4,(int)Gdx.graphics.getHeight()/10, Pixmap.Format.RGB888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        skin.add("background",new Texture(pixmap));
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("background", Color.GRAY);
-        textButtonStyle.down = skin.newDrawable("background", Color.DARK_GRAY);
-        textButtonStyle.checked = skin.newDrawable("background", Color.DARK_GRAY);
-        textButtonStyle.over = skin.newDrawable("background", Color.LIGHT_GRAY);
-        textButtonStyle.font = skin.getFont("default");
-        skin.add("default", textButtonStyle);
-
-    }
 
 	@Override
 	public void render(float delta) {
@@ -135,5 +123,4 @@ public class WinGameScreen implements Screen{
 		skin.dispose();
 	}
 
-	
 }
