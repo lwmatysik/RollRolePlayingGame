@@ -64,7 +64,7 @@ public class Rock {
     }
 
     public int getAttack() {
-        return attack * sword.getAttackModifier();
+        return attack + sword.getAttackModifier();
     }
 
     public void setAttack(int attack) {
