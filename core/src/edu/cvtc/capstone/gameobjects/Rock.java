@@ -26,7 +26,7 @@ public class Rock {
         this.attack = 1;
         this.defense = 1;
         this.maxHealth = 100;
-        this.currentHealth = 100;
+        this.currentHealth = 10;
         this.numberOfPotionsInInventory = 1;
         this.armor = new Armor("Leather", 1);
         this.sword = new Sword("Wood", 1);

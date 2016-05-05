@@ -32,7 +32,6 @@ import java.util.Random;
 public class BattleScreen implements Screen {
 
     private Game game;
-    private Player player;
     private Screen previousScreen;
     private Stage stage;
     private Skin skin;
@@ -59,7 +58,6 @@ public class BattleScreen implements Screen {
 
     public BattleScreen(Game game, Player player, Screen screen, int currentDungeonLevel) {
         this.game = game;
-        this.player = player;
         this.currentDungeonLevel = currentDungeonLevel;
         this.rock = player.getRock();
         this.previousScreen = screen;
@@ -67,7 +65,6 @@ public class BattleScreen implements Screen {
 
     public BattleScreen(Game game, Player player, Screen screen, int currentDungeonLevel, boolean bossFight) {
         this.game = game;
-        this.player = player;
         this.currentDungeonLevel = currentDungeonLevel;
         this.rock = player.getRock();
         this.bossFight = true;
@@ -93,8 +90,14 @@ public class BattleScreen implements Screen {
         table.setPosition(0, 0);
         table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight() / 3.8f);
 
-        TextButton attackButton = new TextButton("Attack", skin);
-        final TextButton potionsButton = new TextButton("Potions", skin);
+        final TextButton attackButton = new TextButton("Attack", skin);
+        final TextButton potionsButton = new TextButton("", skin);
+
+        if (rock.getNumberOfPotionsInInventory() > 0) {
+            potionsButton.setText("Potions");
+        } else {
+            potionsButton.setText("No potions left!");
+        }
 
         rockHealth = new Label("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth(), skin);
         rockHealth.setFontScale(1.5f);
@@ -150,31 +153,32 @@ public class BattleScreen implements Screen {
             }
         });
 
-        potionsButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                if (rock.getNumberOfPotionsInInventory() > 0) {
-                    rock.usePotion();
-
-                    Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/potion.ogg"));
-                    sound.play(0.9f);
-
-                    rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
-
+        if (rock.getNumberOfPotionsInInventory() > 0) {
+            potionsButton.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
                     if (rock.getNumberOfPotionsInInventory() > 0) {
-                        potionsButton.setText("Potions");
+                        rock.usePotion();
+
+                        Sound sound = Gdx.audio.newSound(Gdx.files.internal("sounds/potion.ogg"));
+                        sound.play(0.9f);
+
+                        rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
+
+                        if (rock.getNumberOfPotionsInInventory() > 0) {
+                            potionsButton.setText("Potions");
+                        } else {
+                            potionsButton.setText("No potions left!");
+                            potionsButton.clearListeners();
+                        }
+
                     } else {
                         potionsButton.setText("No potions left!");
                         potionsButton.clearListeners();
                     }
-
-                } else {
-                    potionsButton.setText("No potions left!");
-                    potionsButton.clearListeners();
                 }
-            }
-        });
-
+            });
+        }
     }
 
     private void battleLogic() {
@@ -206,6 +210,8 @@ public class BattleScreen implements Screen {
                                     Gdx.input.setInputProcessor(stage);
                                 }
                             } else {
+                                music.pause();
+                                music.setLooping(false);
                                 music.stop();
                                 game.setScreen(new LoseGameScreen(game));
                             }
@@ -394,7 +400,7 @@ public class BattleScreen implements Screen {
 
     @Override
     public void hide() {
-
+        music.pause();
     }
 
     @Override

@@ -3,11 +3,10 @@ package edu.cvtc.capstone.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -18,7 +17,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import edu.cvtc.capstone.Assets;
 import edu.cvtc.capstone.gameobjects.Player;
+import edu.cvtc.capstone.gameobjects.Rock;
 
 /**
  * Created by tsweitzer on 5/2/16.
@@ -28,41 +29,51 @@ public class LoseGameScreen implements Screen{
 	private SpriteBatch batch;
     private Texture texture;
     private Stage stage;
-    private Game game;
-    private Player player;
 	private Skin skin;
-		    
+	private Game game;
+	private Player player;
+
 	public LoseGameScreen(Game game) {
 		this.game = game;
 	}
 
 	@Override
 	public void show() {
+
+		final Player player = new Player(new Sprite(Assets.rock), new Rock());
+
+		final Music music = Gdx.audio.newMusic(Gdx.files.internal("music/gameover.mp3"));
+		music.setVolume(0.61f);
+		music.play();
+
 		stage = new Stage();
 		batch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("ui/uiskin.json"), new TextureAtlas("ui/uiskin.atlas"));
+
 		Gdx.input.setInputProcessor(stage);
+
 		texture = new Texture(Gdx.files.internal("images/castle_background.png"));
 	    Texture enemyTexture = new Texture(Gdx.files.internal("images/top_hat_monster.png"));
-	    Texture rockTexture = new Texture(Gdx.files.internal("images/rock_with_eyes.png"));
-	    Image rock = new Image(rockTexture);
-	    rock.setPosition(900, 170);
+	    Texture rockTexture = new Texture(Gdx.files.internal("images/rock_with_eyes_dead.png"));
+
+		final Image rock = new Image(rockTexture);
+	    rock.setPosition(900, 163);
 			    
 		Image enemy = new Image(enemyTexture);
-	    enemy.setPosition(300, 170);
+	    enemy.setPosition(300, 163);
 			    
-	    Label label = new Label("Game Over! You have failed me for the last time!",skin);
+	    Label label = new Label("You have failed me for the last time!",skin);
 	    label.setX(400);
 		label.setY(200);
-		label.setWidth(500);;
+		label.setWidth(500);
 	    label.setHeight(200);
 	    label.setFontScale(2);
-				
-	    
-	    createBasicSkin();
+
         TextButton tryAgainButton = new TextButton("Try Again", skin);
-        tryAgainButton.setPosition(500, 400);
-        
+		tryAgainButton.setPosition(Gdx.graphics.getWidth() / 2 - 200, Gdx.graphics.getHeight() / 2);
+        tryAgainButton.setHeight(100);
+		tryAgainButton.setWidth(300);
+
 	    stage.addActor(label);
 	    stage.addActor(tryAgainButton);
 	    stage.addActor(rock);
@@ -71,31 +82,13 @@ public class LoseGameScreen implements Screen{
 	    tryAgainButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game, player));
+                music.setLooping(false);
+				music.stop();
+				game.setScreen(new MainMenuScreen(game, player));
             }
         });
 		
 	}
-	
-	private void createBasicSkin() {
-        BitmapFont font = new BitmapFont();
-        skin = new Skin();
-        skin.add("default", font);
-
-        Pixmap pixmap = new Pixmap((int)Gdx.graphics.getWidth()/4,(int)Gdx.graphics.getHeight()/10, Pixmap.Format.RGB888);
-        pixmap.setColor(Color.WHITE);
-        pixmap.fill();
-        skin.add("background",new Texture(pixmap));
-
-        TextButton.TextButtonStyle textButtonStyle = new TextButton.TextButtonStyle();
-        textButtonStyle.up = skin.newDrawable("background", Color.GRAY);
-        textButtonStyle.down = skin.newDrawable("background", Color.DARK_GRAY);
-        textButtonStyle.checked = skin.newDrawable("background", Color.DARK_GRAY);
-        textButtonStyle.over = skin.newDrawable("background", Color.LIGHT_GRAY);
-        textButtonStyle.font = skin.getFont("default");
-        skin.add("default", textButtonStyle);
-
-    }
 
 	@Override
 	public void render(float delta) {
@@ -113,7 +106,6 @@ public class LoseGameScreen implements Screen{
 	public void resize(int width, int height) {
 		// TODO Auto-generated method stub
 		stage.getViewport().update(width, height, true);
-		
 	}
 
 	@Override
