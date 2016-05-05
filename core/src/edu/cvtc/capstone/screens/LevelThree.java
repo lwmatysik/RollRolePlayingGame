@@ -36,6 +36,7 @@ public class LevelThree implements Screen {
     private Music music;
 
     private LevelTwo previousScreen;
+    private LevelFour nextLevel;
 
     public LevelThree(Game game, Player player, LevelTwo screen) {
         this.game = game;
@@ -86,7 +87,12 @@ public class LevelThree implements Screen {
         if (player.readyForNextLevel()) {
             player.setVelocity(new Vector2(0,0));
             music.pause();
-            game.setScreen(new LevelFour(game, player, this));
+            if (this.nextLevel == null) {
+                game.setScreen(new LevelFour(game, player, this));
+            } else {
+                nextLevel.playerSetPosition(34,27);
+                game.setScreen(this.nextLevel);
+            }
         }
 
         if (player.readyForPreviousLevel()) {
@@ -260,6 +266,10 @@ public class LevelThree implements Screen {
         player.setPosition(x * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - y) * player.getCollisionLayer().getTileHeight());
 
 
+    }
+
+    public void setReturnScreen(LevelFour screen) {
+        this.nextLevel = screen;
     }
 
     @Override

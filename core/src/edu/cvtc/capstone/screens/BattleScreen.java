@@ -306,7 +306,7 @@ public class BattleScreen implements Screen {
 
         Tween.registerAccessor(Label.class, new LabelAccessor());
 
-        if (rock.getLevelUpCounter() == 500) {
+        if (rock.getLevelUpCounter() >= 500) {
 
             rock.setLevelUpCounter(0);
             rock.levelUp();

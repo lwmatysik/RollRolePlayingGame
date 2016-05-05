@@ -35,9 +35,9 @@ public class LevelFour implements Screen {
 
     private Music music;
 
-    private Screen previousScreen;
+    private LevelThree previousScreen;
 
-    public LevelFour(Game game, Player player, Screen screen) {
+    public LevelFour(Game game, Player player, LevelThree screen) {
         this.game = game;
         this.player = player;
         this.previousScreen = screen;
@@ -93,6 +93,7 @@ public class LevelFour implements Screen {
             player.setVelocity(new Vector2(0,0));
             music.pause();
             player.setPosition(1200,250);
+            previousScreen.setReturnScreen(this);
             game.setScreen(previousScreen);
         }
 
@@ -252,6 +253,13 @@ public class LevelFour implements Screen {
     public void callCharacterMenu() {
         music.pause();
         game.setScreen(new CharacterMenuScreen(game, player.getRock(), this));
+    }
+
+    public void playerSetPosition(int x, int y) {
+
+        player.setPosition(x * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - y) * player.getCollisionLayer().getTileHeight());
+
+
     }
 
     @Override

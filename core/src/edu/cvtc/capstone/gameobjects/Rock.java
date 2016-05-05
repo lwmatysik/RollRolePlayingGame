@@ -72,7 +72,7 @@ public class Rock {
     }
 
     public int getDefense() {
-        return defense;
+        return defense * armor.getDefenseModifier();
     }
 
     public void setDefense(int defense) {
