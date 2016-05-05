@@ -21,7 +21,7 @@ import edu.cvtc.capstone.gameobjects.Player;
 /**
  * Created by ruhk5 on 4/18/2016.
  */
-public class LevelOne implements Screen {
+public class LevelFour implements Screen {
 
     private TiledMap map;
     private OrthogonalTiledMapRenderer renderer;
@@ -35,16 +35,17 @@ public class LevelOne implements Screen {
 
     private Music music;
 
-    private LevelTwo nextLevel;
+    private Screen previousScreen;
 
-    public LevelOne(Game game, Player player) {
+    public LevelFour(Game game, Player player, Screen screen) {
         this.game = game;
         this.player = player;
+        this.previousScreen = screen;
 
         stage = new Stage();
         skin = new Skin(Gdx.files.internal("ui/uiskin.json"), new TextureAtlas("ui/uiskin.atlas"));
 
-        map = new TmxMapLoader().load("maps/LevelOneFinal.tmx");
+        map = new TmxMapLoader().load("maps/LevelFourFinal.tmx");
 
         renderer = new OrthogonalTiledMapRenderer(map);
 
@@ -52,13 +53,13 @@ public class LevelOne implements Screen {
 
         player.setMap(map);
 
-        music = Gdx.audio.newMusic(Gdx.files.internal("music/dungeon_theme.mp3"));
+        music = Gdx.audio.newMusic(Gdx.files.internal("music/dungeon_theme4.mp3"));
 
         music.setLooping(true);
         music.setVolume(0.66f);
         music.play();
 
-        player.setPosition(20 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 25) * player.getCollisionLayer().getTileHeight());
+        player.setPosition(34 * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - 27) * player.getCollisionLayer().getTileHeight());
 
     }
 
@@ -85,25 +86,27 @@ public class LevelOne implements Screen {
         if (player.readyForNextLevel()) {
             player.setVelocity(new Vector2(0,0));
             music.pause();
-            if (this.nextLevel == null) {
-                game.setScreen(new LevelTwo(game, player, this));
-            } else {
-                nextLevel.playerSetPosition(27,21);
-                game.setScreen(this.nextLevel);
-            }
+            game.setScreen(new LevelFive(game, player, this));
+        }
+
+        if (player.readyForPreviousLevel()) {
+            player.setVelocity(new Vector2(0,0));
+            music.pause();
+            player.setPosition(1200,250);
+            game.setScreen(previousScreen);
         }
 
         if (player.readyForBattle()) {
             player.setVelocity(new Vector2(0,0));
             music.pause();
-            game.setScreen(new BattleScreen(game, player, this, 1));
+            game.setScreen(new BattleScreen(game, player, this, 4));
 
         }
 
         if (player.readyForBossBattle()) {
             player.setVelocity(new Vector2(0,0));
             music.pause();
-            game.setScreen(new BattleScreen(game, player, this, 1, true));
+            game.setScreen(new BattleScreen(game, player, this, 4, true));
         }
 
         if (player.foundItem()) {
@@ -249,10 +252,6 @@ public class LevelOne implements Screen {
     public void callCharacterMenu() {
         music.pause();
         game.setScreen(new CharacterMenuScreen(game, player.getRock(), this));
-    }
-
-    public void setReturnScreen(LevelTwo screen) {
-        this.nextLevel = screen;
     }
 
     @Override

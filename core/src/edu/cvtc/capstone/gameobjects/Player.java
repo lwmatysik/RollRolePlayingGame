@@ -30,7 +30,7 @@ public class Player extends Sprite {
     private Music smash;
     private Music potion;
 
-    private float speed = 100;
+    private float speed = 500;
     private float distanceSinceLastBattle = 0;
     private float distanceSinceLastSquish = 0;
 
@@ -136,7 +136,7 @@ public class Player extends Sprite {
                 itemLayer.getCell((int) ((getX()) / tileWidth), (int) ((getY()) / tileHeight)).setTile(null);
 
                 if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("iron")) {
-                    rock.setSword("Iron Sword", 2);
+                    rock.setSword("Iron Sword", 2000);
                     foundItem = true;
                     itemMessage = "You found an Iron Sword!";
                     equip.play();
@@ -144,6 +144,16 @@ public class Player extends Sprite {
                     rock.setSword("Gold Sword", 3);
                     foundItem = true;
                     itemMessage = "You found a Gold Sword!";
+                    equip.play();
+                } else if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("diamond")) {
+                    rock.setSword("Diamond Sword", 4);
+                    foundItem = true;
+                    itemMessage = "You found a Diamond Sword!";
+                    equip.play();
+                } else if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("molten")) {
+                    rock.setSword("Magma Sword", 6);
+                    foundItem = true;
+                    itemMessage = "You found the Magma Sword!";
                     equip.play();
                 }
 
@@ -161,9 +171,19 @@ public class Player extends Sprite {
                     itemMessage = "You found Iron Armor!";
                     equip.play();
                 } else if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("gold")) {
-                    rock.setArmor("Gold Armor", 10);
+                    rock.setArmor("Gold Armor", 15);
                     foundItem = true;
                     itemMessage = "You found Gold Armor!";
+                    equip.play();
+                } else if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("diamond")) {
+                    rock.setArmor("Diamond Armor", 30);
+                    foundItem = true;
+                    itemMessage = "You found Diamond Armor!";
+                    equip.play();
+                } else if (collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).getTile().getProperties().containsKey("molten")) {
+                    rock.setArmor("Magma Armor", 50);
+                    foundItem = true;
+                    itemMessage = "You found the Magma Armor!";
                     equip.play();
                 }
                     collisionLayer.getCell((int) (getX()  / tileWidth), (int) (getY()  / tileHeight)).setTile(collisionLayer.getCell(0,0).getTile());
@@ -224,7 +244,7 @@ public class Player extends Sprite {
         distanceSinceLastBattle += (Math.sqrt(Math.pow((getX() - oldX), 2) + Math.pow((getY() - oldY), 2)  ) );
         distanceSinceLastSquish += (Math.sqrt(Math.pow((getX() - oldX), 2) + Math.pow((getY() - oldY), 2)  ) );
 
-        if ( distanceSinceLastBattle >= 8000 ) {
+        if ( distanceSinceLastBattle >= 1000000 ) {
             readyForBattle = true;
             distanceSinceLastBattle = 0;
         }

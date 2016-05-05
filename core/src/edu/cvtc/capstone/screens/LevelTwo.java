@@ -35,9 +35,10 @@ public class LevelTwo implements Screen {
 
     private Music music;
 
-    private Screen previousScreen;
+    private LevelOne previousScreen;
+    private LevelThree nextLevel;
 
-    public LevelTwo(Game game, Player player, Screen screen) {
+    public LevelTwo(Game game, Player player, LevelOne screen) {
 
         this.game = game;
         this.player = player;
@@ -89,13 +90,19 @@ public class LevelTwo implements Screen {
         if (player.readyForNextLevel()) {
             player.setVelocity(new Vector2(0,0));
             music.pause();
-            //game.setScreen(new LevelTwo(game, player, this));
+            if (this.nextLevel == null) {
+                game.setScreen(new LevelThree(game, player, this));
+            } else {
+                nextLevel.playerSetPosition(26,32);
+                game.setScreen(this.nextLevel);
+            }
         }
 
         if (player.readyForPreviousLevel()) {
             player.setVelocity(new Vector2(0,0));
             player.setPosition(930,770);
             music.pause();
+            previousScreen.setReturnScreen(this);
             game.setScreen(previousScreen);
         }
 
@@ -131,6 +138,8 @@ public class LevelTwo implements Screen {
     public void show() {
 
         player.setMap(map);
+
+
 
 
         music.play();
@@ -253,9 +262,20 @@ public class LevelTwo implements Screen {
         }, 2);
     }
 
+    public void playerSetPosition(int x, int y) {
+
+        player.setPosition(x * player.getCollisionLayer().getTileWidth(), (player.getCollisionLayer().getHeight() - y) * player.getCollisionLayer().getTileHeight());
+
+
+    }
+
     public void callCharacterMenu() {
         music.pause();
         game.setScreen(new CharacterMenuScreen(game, player.getRock(), this));
+    }
+
+    public void setReturnScreen(LevelThree screen) {
+        this.nextLevel = screen;
     }
 
     @Override

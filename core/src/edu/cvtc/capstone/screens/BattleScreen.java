@@ -184,6 +184,7 @@ public class BattleScreen implements Screen {
     private void battleLogic() {
         Random critical = new Random();
 
+
         if (!bossFight) {
             Gdx.input.setInputProcessor(null);
 
