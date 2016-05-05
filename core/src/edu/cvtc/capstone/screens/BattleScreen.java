@@ -162,6 +162,8 @@ public class BattleScreen implements Screen {
                     rockHealth.setText("Health: " + rock.getCurrentHealth() + " / " + rock.getMaxHealth());
 
                     if (rock.getNumberOfPotionsInInventory() > 0) {
+                        potionsButton.setText("Potions");
+                    } else {
                         potionsButton.setText("No potions left!");
                         potionsButton.clearListeners();
                     }
@@ -204,8 +206,8 @@ public class BattleScreen implements Screen {
                                     Gdx.input.setInputProcessor(stage);
                                 }
                             } else {
-                                // Need Teia's Game Over Screen
-                                System.out.println("you lose");
+                                music.stop();
+                                game.setScreen(new LoseGameScreen(game));
                             }
                         }
                     })
@@ -248,8 +250,7 @@ public class BattleScreen implements Screen {
                                     Gdx.input.setInputProcessor(stage);
                                 }
                             } else {
-                                // Need Teia's Game Over Screen
-                                System.out.println("you lose");
+                                game.setScreen(new LoseGameScreen(game));
                             }
                         }
                     })
